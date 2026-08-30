@@ -1,43 +1,47 @@
 ---
 /**
- * Wordmark lockup. The client's badge (mother cradling a baby, flanked by palm
- * shoots) exists only baked into JPEGs — this traces its silhouette so the
- * header has a crisp, scalable mark until a real vector is supplied.
+ * Brand lockup: the clinic's own mark plus the wordmark.
+ *
+ * The mark is a crop of the supplied `logo.jpg` — the mother cradling her baby,
+ * flanked by palm shoots, over the star tessellation, with the blue water at the
+ * base. It replaces an SVG I had traced from a poster; that was only ever a
+ * stand-in for the real artwork.
+ *
+ * The wordmark stays as live text rather than part of the image: it scales
+ * crisply, is selectable and readable by screen readers, and inherits colour so
+ * the same component works on both the sand header and the dark green footer.
  */
-interface Props { class?: string; showWordmark?: boolean }
-const { class: className = '', showWordmark = true } = Astro.props;
+interface Props {
+  class?: string;
+  showWordmark?: boolean;
+  /** Rendered size of the mark in px. */
+  size?: number;
+}
+const { class: className = '', showWordmark = true, size = 44 } = Astro.props;
 ---
+
 <span class={`inline-flex items-center gap-3 ${className}`}>
-  <svg viewBox="0 0 64 64" class="h-11 w-11 shrink-0" role="img" aria-label="واحة د. منار مبارز">
-    <circle cx="32" cy="32" r="31" fill="#dce8f0" stroke="currentColor" stroke-width="1.5" opacity="0.9" />
-    <!-- palm shoots -->
-    <g fill="none" stroke="#2f6b52" stroke-width="2" stroke-linecap="round">
-      <path d="M16 40 C16 32 13 28 10 25" />
-      <path d="M16 34 C12 32 10 30 8 29" />
-      <path d="M16 34 C14 29 14 26 14 23" />
-      <path d="M48 40 C48 32 51 28 54 25" />
-      <path d="M48 34 C52 32 54 30 56 29" />
-      <path d="M48 34 C50 29 50 26 50 23" />
-    </g>
-    <!-- mother's cloak -->
-    <path
-      d="M32 18 C24 18 19 25 18 34 C17 42 19 48 22 52 L46 52 C48 46 48 38 46 32 C44 23 39 18 32 18 Z"
-      fill="#5a4030"
-    />
-    <!-- swaddled infant -->
-    <ellipse cx="30" cy="40" rx="9" ry="7.5" fill="#f7f3ec" />
-    <circle cx="27" cy="37" r="4.2" fill="#f7f3ec" />
-    <!-- cradling arm -->
-    <path d="M38 36 C41 40 40 45 36 47" fill="none" stroke="#c8a888" stroke-width="2.6" stroke-linecap="round" />
-  </svg>
-  {showWordmark && (
-    <span class="leading-tight">
-      <span class="block font-[family-name:var(--font-display)] text-[1.05rem] font-extrabold text-[var(--accent-strong)]">
-        واحة د. منار مبارز
+  <img
+    src="/images/logo-mark.png"
+    alt={showWordmark ? '' : 'واحة د. منار مبارز'}
+    aria-hidden={showWordmark ? 'true' : undefined}
+    width={size}
+    height={size}
+    style={`width:${size}px;height:${size}px`}
+    class="shrink-0 rounded-full border border-[var(--ornament)]/30 object-cover shadow-sm"
+    loading="eager"
+    decoding="async"
+  />
+  {
+    showWordmark && (
+      <span class="leading-tight">
+        <span class="block font-[family-name:var(--font-display)] text-[1.05rem] font-extrabold text-[var(--accent-strong)]">
+          واحة د. منار مبارز
+        </span>
+        <span class="block text-[0.7rem] font-medium tracking-wide text-ink-soft">
+          لصحة المرأة والطفل
+        </span>
       </span>
-      <span class="block text-[0.7rem] font-medium tracking-wide text-ink-soft">
-        لصحة المرأة والطفل
-      </span>
-    </span>
-  )}
+    )
+  }
 </span>

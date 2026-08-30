@@ -21,11 +21,7 @@
   // The Supabase keys are only ever read server-side (nothing Supabase
   // touches the browser), so keeping them out of the repo costs nothing.
   "vars": {
-    // Replace with the real deployed origin. Cloudflare assigns
-    // <worker>.<account-subdomain>.workers.dev — there is an account
-    // label in the middle, so a bare manaroasis.workers.dev is NOT valid.
-    // Find it under Worker -> Settings -> Domains & Routes.
-    "PUBLIC_SITE_URL": "https://REPLACE-ME.workers.dev",
+    "PUBLIC_SITE_URL": "https://manaroasis.addax-medical-graphics.workers.dev",
     "PUBLIC_WHATSAPP": "+201010429267",
     "PUBLIC_PHONE": "01010429267",
     "PUBLIC_EMAIL": "Dr.manar.mobarez.clinic@gmail.com",
