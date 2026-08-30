@@ -51,7 +51,13 @@ insert into public.courses (
 ) on conflict (slug) do nothing;
 
 -- ── Modules and lessons for course 1 ──
-with c as (select id from public.courses where slug = 'breastfeeding-prep'),
+with c as (
+  select co.id from public.courses co
+  where co.slug = 'breastfeeding-prep'
+    -- Skip entirely if this course already has modules, so re-running the
+    -- file cannot duplicate the curriculum.
+    and not exists (select 1 from public.modules m where m.course_id = co.id)
+),
 m1 as (
   insert into public.modules (course_id, title_ar, summary_ar, sort_order)
   select c.id, 'قبل الولادة: التجهيز', 'إيه اللي تعرفيه وتجهزيه قبل ما طفلك يوصل.', 1 from c
@@ -98,7 +104,11 @@ select id, 'back-to-work',     'العودة للعمل والحفاظ على ا
 -- ── Module scaffold for course 2. The client has not supplied a
 --    curriculum for this one yet, so it stays a single placeholder
 --    module rather than invented lesson titles. ──
-with c as (select id from public.courses where slug = 'beauty-starts-within')
+with c as (
+  select co.id from public.courses co
+  where co.slug = 'beauty-starts-within'
+    and not exists (select 1 from public.modules m where m.course_id = co.id)
+)
 insert into public.modules (course_id, title_ar, summary_ar, sort_order)
 select c.id, 'مقدمة الكورس', 'المحتوى قيد الإعداد.', 1 from c;
 
@@ -125,7 +135,11 @@ insert into public.courses (
   0
 ) on conflict (slug) do nothing;
 
-with c as (select id from public.courses where slug = 'podcast'),
+with c as (
+  select co.id from public.courses co
+  where co.slug = 'podcast'
+    and not exists (select 1 from public.modules m where m.course_id = co.id)
+),
 m as (
   insert into public.modules (course_id, title_ar, summary_ar, sort_order)
   select c.id, 'الحلقات', 'كل حلقات بودكاست الواحة.', 1 from c

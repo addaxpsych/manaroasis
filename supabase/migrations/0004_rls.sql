@@ -59,24 +59,30 @@ alter table public.enrollment_requests enable row level security;
 alter table public.contact_messages    enable row level security;
 
 -- ── profiles ──
+drop policy if exists "own profile readable" on public.profiles;
 create policy "own profile readable" on public.profiles
   for select using (id = auth.uid() or public.is_admin());
 
 -- A customer may edit their own name/phone but must never be able to
 -- promote themselves, so the WITH CHECK pins role back to 'customer'.
+drop policy if exists "own profile updatable" on public.profiles;
 create policy "own profile updatable" on public.profiles
   for update using (id = auth.uid())
   with check (id = auth.uid() and role = 'customer');
 
+drop policy if exists "admin manages profiles" on public.profiles;
 create policy "admin manages profiles" on public.profiles
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- ── catalogue: published rows are public, writes are admin-only ──
+drop policy if exists "published courses public" on public.courses;
 create policy "published courses public" on public.courses
   for select using (is_published or public.is_admin());
+drop policy if exists "admin writes courses" on public.courses;
 create policy "admin writes courses" on public.courses
   for all using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "modules of published courses public" on public.modules;
 create policy "modules of published courses public" on public.modules
   for select using (
     exists (
@@ -84,27 +90,36 @@ create policy "modules of published courses public" on public.modules
       where c.id = modules.course_id and (c.is_published or public.is_admin())
     )
   );
+drop policy if exists "admin writes modules" on public.modules;
 create policy "admin writes modules" on public.modules
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- The policy that actually protects paid content.
+drop policy if exists "lessons need preview or enrollment" on public.lessons;
 create policy "lessons need preview or enrollment" on public.lessons
   for select using (public.can_read_lesson(id) or public.is_admin());
+drop policy if exists "admin writes lessons" on public.lessons;
 create policy "admin writes lessons" on public.lessons
   for all using (public.is_admin()) with check (public.is_admin());
 
 -- ── enrollments and progress: own rows, plus admin ──
+drop policy if exists "own enrollments readable" on public.enrollments;
 create policy "own enrollments readable" on public.enrollments
   for select using (user_id = auth.uid() or public.is_admin());
+drop policy if exists "admin writes enrollments" on public.enrollments;
 create policy "admin writes enrollments" on public.enrollments
   for all using (public.is_admin()) with check (public.is_admin());
 
+drop policy if exists "own progress readable" on public.lesson_progress;
 create policy "own progress readable" on public.lesson_progress
   for select using (user_id = auth.uid() or public.is_admin());
+drop policy if exists "own progress writable" on public.lesson_progress;
 create policy "own progress writable" on public.lesson_progress
   for insert with check (user_id = auth.uid());
+drop policy if exists "own progress updatable" on public.lesson_progress;
 create policy "own progress updatable" on public.lesson_progress
   for update using (user_id = auth.uid()) with check (user_id = auth.uid());
+drop policy if exists "admin manages progress" on public.lesson_progress;
 create policy "admin manages progress" on public.lesson_progress
   for all using (public.is_admin()) with check (public.is_admin());
 
@@ -112,7 +127,9 @@ create policy "admin manages progress" on public.lesson_progress
 --    INSERT policy; submissions arrive through server endpoints using the
 --    service-role key, so forged or spam rows cannot be written straight
 --    from the browser with the anon key. ──
+drop policy if exists "admin manages requests" on public.enrollment_requests;
 create policy "admin manages requests" on public.enrollment_requests
   for all using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "admin manages messages" on public.contact_messages;
 create policy "admin manages messages" on public.contact_messages
   for all using (public.is_admin()) with check (public.is_admin());
