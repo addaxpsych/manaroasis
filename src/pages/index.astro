@@ -36,13 +36,6 @@ const promises = [
   },
 ];
 
-const stats = [
-  { n: '٧', l: 'أطباء متخصصين' },
-  { n: '٢', l: 'فروع بالقاهرة' },
-  { n: 'IBCLC', l: 'بورد دولي للرضاعة' },
-  { n: '٨', l: 'عيادات متخصصة' },
-];
-
 const courseHighlights = [
   'استعدي بثقة',
   'زيادة إدرار الحليب',
@@ -111,24 +104,16 @@ const courseHighlights = [
             class="h-full w-full object-cover"
           />
         </div>
-        <div class="absolute -bottom-5 start-1/2 w-[85%] -translate-x-1/2 rounded-2xl border border-sand-400/50 bg-white/95 px-5 py-3.5 text-center shadow-lg backdrop-blur">
+        <!--
+          Centred with inset + auto margins rather than `start-1/2` plus
+          `-translate-x-1/2`: translate-x is a physical axis and does not flip
+          under dir="rtl", so the transform dragged this card off the left edge.
+        -->
+        <div class="absolute -bottom-5 start-0 end-0 mx-auto w-[85%] rounded-2xl border border-sand-400/50 bg-white/95 px-5 py-3.5 text-center shadow-lg backdrop-blur">
           <p class="text-sm font-bold text-oasis-900">د. منار محمد مبارز</p>
           <p class="mt-0.5 text-xs text-ink-soft">استشاري بالبورد الدولي للرضاعة الطبيعية (IBCLC)</p>
         </div>
       </div>
-    </div>
-
-    <div class="relative border-t border-gold-500/20 bg-white/55 backdrop-blur">
-      <dl class="mx-auto grid max-w-7xl grid-cols-2 px-6 md:grid-cols-4">
-        {
-          stats.map((stat) => (
-            <div class="border-s border-gold-500/15 px-3 py-6 text-center first:border-s-0">
-              <dt class="text-2xl font-extrabold text-oasis-800">{stat.n}</dt>
-              <dd class="mt-1 text-xs text-ink-soft">{stat.l}</dd>
-            </div>
-          ))
-        }
-      </dl>
     </div>
   </section>
 
