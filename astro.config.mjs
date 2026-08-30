@@ -11,7 +11,37 @@ import { loadEnv } from 'vite';
 // it must be set at BUILD time — on Cloudflare, as a build environment
 // variable, not only as a runtime var.
 const { PUBLIC_SITE_URL } = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '');
-const site = PUBLIC_SITE_URL || 'http://localhost:4321';
+
+/*
+ * Astro validates `site` as a URL and aborts the whole build with a bare
+ * "Invalid URL" that names neither the setting nor the offending value. A
+ * paste of "PUBLIC_SITE_URL = https://..." into a dashboard value box hits
+ * exactly that, so validate here and say what is wrong instead.
+ */
+function resolveSite(raw) {
+  const fallback = 'http://localhost:4321';
+  if (!raw) return fallback;
+
+  const trimmed = String(raw).trim();
+  try {
+    return new URL(trimmed).origin;
+  } catch {
+    console.warn(
+      `
+[31m  PUBLIC_SITE_URL is not a valid URL: ${JSON.stringify(trimmed)}
+` +
+        `  It must be the bare origin only, e.g. https://example.workers.dev
+` +
+        `  — no variable name, no "=", no trailing path.
+` +
+        `  Falling back to ${fallback} for this build.[0m
+`,
+    );
+    return fallback;
+  }
+}
+
+const site = resolveSite(PUBLIC_SITE_URL);
 
 /*
  * Canonical URLs, OG tags, JSON-LD and the sitemap are baked into the HTML at
