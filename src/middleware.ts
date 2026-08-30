@@ -1,22 +1,21 @@
 import { defineMiddleware } from 'astro:middleware';
 
 /**
- * Attaches a Supabase client and the current user to `locals` for routes that
- * actually need them.
+ * Attaches a request-scoped Supabase client and the current session to
+ * `locals` for every on-demand route.
  *
- * The path guard is not an optimisation — middleware also runs while
- * prerendering the marketing pages at build time, and touching Supabase there
- * would both fail (no secrets during a plain `astro build`) and pointlessly
- * couple static pages to the database. Public paths return untouched.
+ * The `isPrerendered` guard is essential, not an optimisation: middleware also
+ * runs while the marketing pages are prerendered at build time, where there is
+ * no request session and touching `cloudflare:workers` env would fail the
+ * build. Prerendered routes return untouched.
+ *
+ * Everything else gets the client — including `/courses`, which reads the
+ * catalogue. An earlier version allow-listed only `/dashboard`, `/admin`,
+ * `/api` and `/auth`; the course pages then received `undefined`, and their
+ * defensive try/catch turned that into a permanently empty catalogue.
  */
-const PROTECTED_PREFIXES = ['/dashboard', '/admin', '/api', '/auth'];
-
 export const onRequest = defineMiddleware(async (context, next) => {
-  const { pathname } = context.url;
-
-  if (!PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))) {
-    return next();
-  }
+  if (context.isPrerendered) return next();
 
   // Imported lazily so `cloudflare:workers` never enters the static build graph.
   const { createSupabaseServerClient } = await import('./lib/supabase/server');
@@ -25,11 +24,12 @@ export const onRequest = defineMiddleware(async (context, next) => {
     request: context.request,
     cookies: context.cookies,
   });
-
   context.locals.supabase = supabase;
 
-  // getUser() revalidates against Supabase rather than trusting the cookie,
-  // and refreshes the session as a side effect.
+  // getUser() revalidates against Supabase rather than trusting the cookie, and
+  // refreshes the session as a side effect. With no auth cookie present it
+  // returns immediately without a network call, so anonymous visitors to the
+  // public course pages pay nothing for this.
   const {
     data: { user },
   } = await supabase.auth.getUser();

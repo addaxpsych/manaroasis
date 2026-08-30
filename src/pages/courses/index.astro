@@ -75,12 +75,19 @@ const courses = await listPublishedCourses(Astro.locals.supabase);
                 )}
 
                 <div class="flex flex-1 flex-col p-8">
-                  {course.delivery_label && (
-                    <span class="inline-flex w-fit items-center gap-1.5 rounded-full border border-[var(--ornament)]/40 px-3 py-1 text-xs font-semibold text-[var(--accent)]">
-                      <Rosette size={10} />
-                      {course.delivery_label}
-                    </span>
-                  )}
+                  <div class="flex flex-wrap items-center gap-2">
+                    {course.delivery_label && (
+                      <span class="inline-flex w-fit items-center gap-1.5 rounded-full border border-[var(--ornament)]/40 px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+                        <Rosette size={10} />
+                        {course.delivery_label}
+                      </span>
+                    )}
+                    {course.access === 'free' && (
+                      <span class="inline-flex w-fit items-center rounded-full bg-[var(--accent-strong)] px-3 py-1 text-xs font-bold text-white">
+                        مجاني للجميع
+                      </span>
+                    )}
+                  </div>
 
                   <h2 class="mt-4 text-2xl leading-snug text-[var(--accent-strong)]">
                     <a href={`/courses/${course.slug}`} class="after:absolute after:inset-0">
@@ -104,10 +111,10 @@ const courses = await listPublishedCourses(Astro.locals.supabase);
 
                   <div class="mt-auto flex items-center justify-between gap-4 pt-7">
                     <span class="text-lg font-extrabold text-[var(--accent-strong)]">
-                      {price.display}
+                      {course.access === 'free' ? 'مجاناً' : price.display}
                     </span>
                     <span class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">
-                      التفاصيل
+                      {course.access === 'free' ? 'شاهدي الحلقات' : 'التفاصيل'}
                       <span class="transition group-hover:-translate-x-1">←</span>
                     </span>
                   </div>

@@ -3,7 +3,7 @@
  * marketing page carries structured data describing the practice, its
  * physicians and both physical branches.
  */
-import { site, branches } from '../config/site';
+import { site, branches, social } from '../config/site';
 import { team } from '../config/team';
 
 const BASE = 'https://manaroasis.com';
@@ -20,6 +20,7 @@ export function clinicSchema() {
     telephone: `+2${site.phone}`,
     email: site.email,
     inLanguage: 'ar',
+    sameAs: social.map((s) => s.href),
     medicalSpecialty: ['Endocrine', 'Pediatric', 'Nutrition', 'Dermatology', 'Surgical'],
     location: branches.map((b) => ({
       '@type': 'MedicalBusiness',

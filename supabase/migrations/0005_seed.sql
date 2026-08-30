@@ -1,9 +1,11 @@
 -- ─────────────────────────────────────────────────────────────
--- 0005 — seed the two real courses found in designs/
+-- 0005 — seed the real courses
 --
--- Both are left UNPUBLISHED with price 0: the client has not given prices
--- yet, and publishing a course at 0 EGP would be worse than not showing it.
--- Set price and flip is_published in /admin/courses before launch.
+-- The two paid courses from designs/ are left UNPUBLISHED with price 0: the
+-- client has not given prices yet, and publishing a course at 0 EGP would be
+-- worse than not showing it. Set price and flip is_published in /admin/courses.
+--
+-- بودكاست الواحة is different: it is free and public, so it ships published.
 --
 -- Lesson bodies and video ids are intentionally empty — they are the
 -- client's content to enter, not ours to invent. Titles are derived from
@@ -99,3 +101,45 @@ select id, 'back-to-work',     'العودة للعمل والحفاظ على ا
 with c as (select id from public.courses where slug = 'beauty-starts-within')
 insert into public.modules (course_id, title_ar, summary_ar, sort_order)
 select c.id, 'مقدمة الكورس', 'المحتوى قيد الإعداد.', 1 from c;
+
+-- ── Podcast — بودكاست الواحة ────────────────────────────────
+-- A FREE, public course: published, price 0, access 'free', and every
+-- lesson flagged is_preview so the RLS policy on `lessons` lets anonymous
+-- visitors read them. No account and no enrollment required.
+insert into public.courses (
+  slug, title_ar, hook_ar, description_ar, cover_image, highlights,
+  delivery_label, price_egp, theme, access, instructor_slug, is_published, sort_order
+) values (
+  'podcast',
+  'بودكاست الواحة',
+  'حلقات مفتوحة للجميع، من غير حساب ومن غير اشتراك.',
+  'حلقات بودكاست الواحة مع د. منار مبارز وضيوفها، عن صحة المرأة والطفل: الحمل والرضاعة والتغذية والهرمونات والصحة النفسية. اتفرجي على أي حلقة مباشرة من غير تسجيل.',
+  '/images/courses/podcast.jpg',
+  '["مجاني بالكامل","من غير تسجيل","حلقات مع ضيوف متخصصين","صحة المرأة والطفل"]'::jsonb,
+  'أونلاين | مجاني',
+  0,
+  'oasis',
+  'free',
+  'manar-mobarez',
+  true,
+  0
+) on conflict (slug) do nothing;
+
+with c as (select id from public.courses where slug = 'podcast'),
+m as (
+  insert into public.modules (course_id, title_ar, summary_ar, sort_order)
+  select c.id, 'الحلقات', 'كل حلقات بودكاست الواحة.', 1 from c
+  returning id
+)
+insert into public.lessons (module_id, slug, title_ar, content_ar, video_provider, video_id, is_preview, sort_order)
+select id, v.slug, v.title, v.note, 'youtube', v.vid, true, v.ord
+from m, (values
+  ('ep-1', 'الصيام مع الحمل والرضاعة', 'مع د. محمد ثابت', 'tFrM6EIG_Vs', 1),
+  ('ep-2', 'العلاج الطبيعي لصحة المرأة', 'مع د. إيمان إبراهيم', 'ZZ4mvJXb4cc', 2),
+  ('ep-3', 'هل ينهي العلاج الطبيعي آلام النساء؟', null, '2RBDGep7a7Q', 3),
+  ('ep-4', 'تغذية الأم أثناء الحمل', null, 'DPr-K7PyBlE', 4),
+  ('ep-5', 'تغذية الأم أثناء الرضاعة', null, 'Vpiuc5aBenI', 5),
+  ('ep-6', 'سرطان الثدي', null, '7t70r3H49Rs', 6),
+  ('ep-7', 'هرمونات النساء وعلاجها بالتغذية', null, 'D8jFphE8PhM', 7),
+  ('ep-8', 'الصحة النفسية للمرأة بين الحمل والرضاعة', null, 'GvqKNh5wk6w', 8)
+) as v(slug, title, note, vid, ord);

@@ -67,8 +67,22 @@ Run once, in order:
 3. **Register** at `/auth/register` with the clinic's address, then run
    [`supabase/seed/promote_admin.sql`](supabase/seed/promote_admin.sql) to make
    that account an admin. There is deliberately no in-app way to self-promote.
-4. **Set prices and publish** the two seeded courses at `/admin/courses`. They
-   ship unpublished at 0 EGP because the client had not set prices.
+4. **Set prices and publish** the two paid courses at `/admin/courses`. They ship
+   unpublished at 0 EGP because the client had not set prices.
+
+### Courses seeded
+
+| Course | Access | State |
+|---|---|---|
+| بودكاست الواحة | `free` | **Published.** 8 YouTube episodes, open to everyone |
+| كورس الاستعداد للرضاعة قبل الولادة | `paid` | Draft — needs price |
+| الجمال يبدأ من الداخل | `paid` | Draft — needs price and curriculum |
+
+`courses.access` decides the whole flow. A `free` course has every lesson
+flagged `is_preview`, so RLS serves it to anonymous visitors and the sales page
+links straight into the public player at `/courses/<slug>/<lesson>` — no
+account, no request, no payment. A `paid` course keeps the request → offline
+payment → admin activation flow and plays inside `/dashboard`.
 
 ### Schema
 

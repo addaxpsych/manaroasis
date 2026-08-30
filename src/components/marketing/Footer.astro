@@ -2,7 +2,8 @@
 import Logo from '../brand/Logo.astro';
 import Rosette from '../brand/Rosette.astro';
 import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
-import { site, branches, waLink, telLink, mailLink } from '../../config/site';
+import SocialIcon from '../ui/SocialIcon.astro';
+import { site, branches, social, waLink, telLink, mailLink } from '../../config/site';
 import { services } from '../../config/services';
 
 const year = new Date().getFullYear();
@@ -24,6 +25,22 @@ const year = new Date().getFullYear();
         >
           <WhatsAppIcon size={16} /> احجزي على واتساب
         </a>
+
+        <ul class="mt-7 flex items-center gap-3">
+          {social.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={item.label}
+                class="flex h-10 w-10 items-center justify-center rounded-full border border-sand-200/20 text-sand-200/70 transition hover:border-gold-400/60 hover:text-gold-400"
+              >
+                <SocialIcon name={item.key} size={17} />
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div>

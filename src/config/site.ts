@@ -20,6 +20,24 @@ export const site = {
   email: 'Dr.manar.mobarez.clinic@gmail.com',
 } as const;
 
+export const social = [
+  {
+    key: 'facebook',
+    label: 'فيسبوك',
+    href: 'https://www.facebook.com/manar.oasis',
+  },
+  {
+    key: 'instagram',
+    label: 'إنستجرام',
+    href: 'https://www.instagram.com/dr.manaroasis/',
+  },
+  {
+    key: 'youtube',
+    label: 'يوتيوب',
+    href: 'https://www.youtube.com/@ManarOasis',
+  },
+] as const;
+
 /**
  * Builds a wa.me deep link with a pre-filled Arabic message, so Dr. Manar sees
  * what the person needs before she replies. WhatsApp is the primary booking

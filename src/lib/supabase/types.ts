@@ -11,6 +11,7 @@
  */
 
 export type CourseTheme = 'oasis' | 'botanical';
+export type CourseAccess = 'free' | 'paid';
 export type EnrollmentStatus = 'pending' | 'active' | 'expired' | 'cancelled';
 export type RequestStatus = 'new' | 'contacted' | 'paid' | 'enrolled' | 'rejected';
 export type VideoProvider = 'youtube' | 'vimeo' | 'bunny' | 'cloudflare_stream';
@@ -38,6 +39,7 @@ export type Course = {
   price_egp: number;
   discount_price_egp: number | null;
   theme: CourseTheme;
+  access: CourseAccess;
   instructor_slug: string | null;
   is_published: boolean;
   sort_order: number;

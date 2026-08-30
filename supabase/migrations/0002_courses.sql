@@ -24,6 +24,11 @@ create table if not exists public.courses (
   -- treatments taken from the client's posters.
   theme               text not null default 'oasis'
                       check (theme in ('oasis', 'botanical')),
+  -- 'free' courses are open to everyone with no account and no enrollment
+  -- (their lessons are all previews). 'paid' courses go through the
+  -- request -> payment -> admin activation flow.
+  access              text not null default 'paid'
+                      check (access in ('free', 'paid')),
   instructor_slug     text,
   is_published        boolean not null default false,
   sort_order          integer not null default 0,

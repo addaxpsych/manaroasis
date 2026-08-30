@@ -4,6 +4,7 @@ import LessonComplete from '../../../../components/islands/LessonComplete';
 import Rosette from '../../../../components/brand/Rosette.astro';
 import { requireUser } from '../../../../lib/guards';
 import { getCourseOutline } from '../../../../lib/courses';
+import { embedUrl } from '../../../../lib/video';
 
 const auth = requireUser(Astro);
 if ('redirect' in auth) return auth.redirect;
@@ -37,23 +38,6 @@ const { data: progress } = await supabase
   .maybeSingle();
 
 const isComplete = Boolean(progress?.completed_at);
-
-/** Builds a privacy-friendly embed URL for the configured provider. */
-function embedUrl(provider: string | null, id: string | null): string | null {
-  if (!provider || !id) return null;
-  switch (provider) {
-    case 'youtube':
-      return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
-    case 'vimeo':
-      return `https://player.vimeo.com/video/${id}`;
-    case 'bunny':
-      return `https://iframe.mediadelivery.net/embed/${id}`;
-    case 'cloudflare_stream':
-      return `https://customer-${id}.cloudflarestream.com/iframe`;
-    default:
-      return null;
-  }
-}
 
 const video = embedUrl(lesson.video_provider, lesson.video_id);
 const attachments = lesson.attachments ?? [];
