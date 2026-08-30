@@ -9,8 +9,12 @@
   // Public, non-secret values only. Secrets (SUPABASE_SERVICE_ROLE_KEY,
   // RESEND_API_KEY) are set with `wrangler secret put` and must NEVER
   // be committed here.
+  //
+  // PUBLIC_SITE_URL must ALSO be set as a build variable, not just here:
+  // canonical URLs, OG tags, JSON-LD and the sitemap are baked in at build
+  // time, so a runtime-only value would not reach them.
   "vars": {
-    "PUBLIC_SITE_URL": "https://manaroasis.com",
+    "PUBLIC_SITE_URL": "https://manaroasis.workers.dev",
     "PUBLIC_WHATSAPP": "+201010429267",
     "PUBLIC_PHONE": "01010429267",
     "PUBLIC_EMAIL": "Dr.manar.mobarez.clinic@gmail.com"

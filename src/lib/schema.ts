@@ -3,10 +3,10 @@
  * marketing page carries structured data describing the practice, its
  * physicians and both physical branches.
  */
-import { site, branches, social } from '../config/site';
+import { site, branches, social, SITE_URL } from '../config/site';
 import { team } from '../config/team';
 
-const BASE = 'https://manaroasis.com';
+const BASE = SITE_URL;
 
 export function clinicSchema() {
   return {

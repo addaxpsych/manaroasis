@@ -5,6 +5,7 @@ import { createSupabaseAdminClient } from '../../../lib/supabase/admin';
 import { sendEmail } from '../../../lib/email/resend';
 import { enrollmentActivated } from '../../../lib/email/templates';
 import { getEnv } from '../../../lib/env';
+import { SITE_URL } from '../../../config/site';
 
 const schema = z.object({
   requestId: z.uuid(),
@@ -43,7 +44,7 @@ export const POST: APIRoute = async (context) => {
   const { requestId, amountPaid, paymentMethod, paymentReference } = parsed.data;
   const admin = createSupabaseAdminClient();
   const env = getEnv();
-  const siteUrl = env.PUBLIC_SITE_URL ?? 'https://manaroasis.com';
+  const siteUrl = env.PUBLIC_SITE_URL ?? SITE_URL;
 
   const { data: request } = await admin
     .from('enrollment_requests')

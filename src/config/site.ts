@@ -6,6 +6,18 @@
  * prerendered marketing pages need no environment plumbing at build time.
  */
 
+/**
+ * Canonical origin, no trailing slash.
+ *
+ * Inlined at build time from PUBLIC_SITE_URL, so it is correct in both
+ * prerendered HTML and on-demand routes. There is deliberately no production
+ * domain hardcoded as a fallback — a wrong canonical URL is worse than an
+ * obviously-local one.
+ */
+export const SITE_URL = (
+  import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321'
+).replace(/\/$/, '');
+
 export const site = {
   name: 'واحة د. منار مبارز',
   nameLatin: 'Manar Oasis',

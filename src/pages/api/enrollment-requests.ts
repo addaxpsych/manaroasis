@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '../../lib/supabase/admin';
 import { sendEmail } from '../../lib/email/resend';
 import { requestReceived, requestAlert } from '../../lib/email/templates';
 import { getEnv } from '../../lib/env';
+import { SITE_URL } from '../../config/site';
 
 const schema = z.object({
   courseId: z.uuid(),
@@ -74,7 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
   // surfaced as an error — the customer should not be told their request
   // failed when it did not.
   const env = getEnv();
-  const siteUrl = env.PUBLIC_SITE_URL ?? 'https://manaroasis.com';
+  const siteUrl = env.PUBLIC_SITE_URL ?? SITE_URL;
 
   const customerMail = requestReceived({
     name: input.fullName,

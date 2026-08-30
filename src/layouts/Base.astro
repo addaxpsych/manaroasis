@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { site } from '../config/site';
+import { site, SITE_URL } from '../config/site';
 
 interface Props {
   title: string;
@@ -23,8 +23,8 @@ const {
 } = Astro.props;
 
 const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://manaroasis.com');
-const ogImage = new URL(image, Astro.site ?? 'https://manaroasis.com');
+const canonical = new URL(Astro.url.pathname, Astro.site ?? SITE_URL);
+const ogImage = new URL(image, Astro.site ?? SITE_URL);
 ---
 <!doctype html>
 <html lang="ar" dir="rtl" data-theme={theme}>
