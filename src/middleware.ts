@@ -17,6 +17,10 @@ import { defineMiddleware } from 'astro:middleware';
 export const onRequest = defineMiddleware(async (context, next) => {
   if (context.isPrerendered) return next();
 
+  // The config diagnostic must run precisely when Supabase config is broken,
+  // so it cannot sit behind the client it exists to diagnose.
+  if (context.url.pathname === '/api/health') return next();
+
   // Imported lazily so `cloudflare:workers` never enters the static build graph.
   const { createSupabaseServerClient } = await import('./lib/supabase/server');
 
