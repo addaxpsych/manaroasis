@@ -70,6 +70,25 @@ set as **Secrets**, never as dashboard Variables.
 `npm ci` then fails in CI while passing locally:
 `npx npm@10.9.2 install --package-lock-only`.
 
+**7. Cloudflare has TWO separate variable sections, and putting a value in the
+wrong one fails silently.** Settings → *Variables and secrets* is the **runtime**
+env the Worker reads; Settings → *Builds* → *Variables* only exists inside the
+build container. The Supabase and Resend keys belong in **runtime**; only
+`PUBLIC_SITE_URL` is needed at **build** (and it is needed in both). Getting this
+backwards makes every on-demand route fail while the prerendered pages keep
+serving — a signature worth recognising, because it looks like a code bug.
+
+**8. `translate-x` does not flip under `dir="rtl"`.** It is a physical axis, so
+the common `start-1/2` + `-translate-x-1/2` centring trick drags the element off
+the *left* edge instead of centring it. Centre with `start-0 end-0 mx-auto`
+instead. (Sliding an arrow leftward on hover *is* correct in RTL — that is
+forward, not a bug.)
+
+**9. A malformed `PUBLIC_SITE_URL` used to kill the build** with a bare
+`Invalid URL` naming neither the setting nor the value — pasting `NAME = value`
+into a dashboard value box hits it. `astro.config.mjs` now parses the value
+itself and falls back with a readable message, so this should stay non-fatal.
+
 ## Architecture
 
 ### Rendering split
@@ -88,13 +107,19 @@ env, Supabase or cookies.
 Doctors are referenced from courses by config slug (`courses.instructor_slug`),
 not a foreign key. Do not migrate marketing content into the database.
 
-### Free vs paid courses
-`courses.access` (`'free' | 'paid'`) drives two entirely different paths:
-- **free** → every lesson is `is_preview`, so RLS serves it anonymously; the
-  sales page links into the **public** player at `/courses/<slug>/<lesson>`.
-  No account, no enrollment. (بودكاست الواحة works this way.)
-- **paid** → request → offline payment → admin activation; plays only inside
-  `/dashboard/courses/<slug>/<lesson>`.
+### Three course states
+Two independent columns, because none of these collapse into one flag:
+
+| State | Columns | Behaviour |
+|---|---|---|
+| **free** | `access='free'` | Every lesson is `is_preview`, so RLS serves it anonymously. Sales page links into the **public** player at `/courses/<slug>/<lesson>` — no account, no enrollment. (بودكاست الواحة) |
+| **paid** | `access='paid'` | Request → offline payment → admin activation. Plays only inside `/dashboard/courses/<slug>/<lesson>`. |
+| **قريباً** | `coming_soon=true` | Visible with hook, highlights and curriculum, but price hidden, lessons not linked, and the enrollment form replaced by a WhatsApp prompt. |
+
+`is_published` cannot express "coming soon" on its own — false hides a course
+entirely, true offers it for sale — hence the separate `coming_soon` column. It
+also lifts the `/admin/courses` publish guard, which otherwise refuses a course
+priced at 0 with no lessons; an announced course legitimately is exactly that.
 
 Both players share `embedUrl()` in `src/lib/video.ts`.
 
@@ -120,7 +145,7 @@ Users cannot self-promote: the profile update policy pins `role` back to
 `customer`. Admin elevation happens only via `supabase/seed/promote_admin.sql`.
 
 ### Database workflow
-No live migration tooling is wired up. `supabase/migrations/0001…0005` are the
+No live migration tooling is wired up. `supabase/migrations/0001…0006` are the
 source of truth; `supabase/APPLY_ALL.sql` is their concatenation, pasted into
 the Supabase SQL editor by hand, and `supabase/VERIFY.sql` asserts the result
 (every row should read PASS). **After editing any migration, regenerate
@@ -134,6 +159,26 @@ modules. Preserve that when adding SQL.
 `src/lib/supabase/types.ts` is hand-written to match the migrations. Once the
 project is live, prefer regenerating it with
 `npx supabase gen types typescript --project-id <ref>`.
+
+## Diagnosing a broken deployment
+
+The failure signature is worth memorising: **prerendered pages 200 while every
+on-demand route fails**. That is almost never a code bug — it is middleware
+throwing on a missing env var before any page runs.
+
+- `GET /api/health` reports which env variable NAMES the running Worker sees,
+  which are missing, any unexpected ones (where a typo shows up), and the
+  build-time `PUBLIC_SITE_URL`. Names only; values are never read or returned.
+  It is exempt from the Supabase setup in middleware so it works precisely when
+  that configuration is broken.
+- A config failure returns a branded Arabic 503 with an `x-config-error` header
+  rather than an opaque 500, and logs the named cause to Workers observability
+  (enabled in `wrangler.jsonc`).
+- `curl -I <url>/courses | grep x-config-error` distinguishes a misconfigured
+  Worker from a genuine application error in one request.
+
+`/api/health` is a debugging aid, not a permanent fixture — it is reasonable to
+remove it or move it behind `requireAdmin` once things are stable.
 
 ## Design system
 
@@ -171,8 +216,14 @@ lessons or a zero price.
 
 - Two doctors (نادين كامل، ريهام محي الدين) have no solo poster, so their
   portraits are low-resolution crops from the team image.
-- Resend cannot email customers until a DNS-verified sending domain exists —
-  `pages.dev`/`workers.dev` subdomains cannot be verified.
+- **Resend cannot email customers until a DNS-verified sending domain exists** —
+  `pages.dev`/`workers.dev` subdomains cannot be verified, so `EMAIL_FROM` is
+  still `onboarding@resend.dev`, which only delivers to the Resend account
+  owner. This blocks selling anything: a paying customer would receive neither
+  a confirmation nor an activation email.
+- الجمال يبدأ من الداخل is still an unpublished draft with no price and no
+  curriculum. الاستعداد للرضاعة قبل الولادة is priced (600 EGP) and announced as
+  قريباً; opening it for sale is a toggle in `/admin/courses`, not a code change.
 - Video hosting is undecided. `lessons.video_provider` + `video_id` support
   YouTube, Vimeo, Bunny and Cloudflare Stream so it is a data change, not a code
   change — but unlisted YouTube links are freely shareable, which matters before

@@ -59,7 +59,7 @@ Run once, in order:
 
 1. **Apply the schema.** Paste [`supabase/APPLY_ALL.sql`](supabase/APPLY_ALL.sql)
    into the Supabase SQL editor and run it. (It is the concatenation of
-   `supabase/migrations/0001…0005`, which are also applyable individually.)
+   `supabase/migrations/0001…0006`, which are also applyable individually.)
 2. **Configure auth email** — follow
    [`supabase/auth-templates/README.md`](supabase/auth-templates/README.md):
    custom SMTP through Resend, the four Arabic RTL templates, and the redirect
@@ -67,15 +67,16 @@ Run once, in order:
 3. **Register** at `/auth/register` with the clinic's address, then run
    [`supabase/seed/promote_admin.sql`](supabase/seed/promote_admin.sql) to make
    that account an admin. There is deliberately no in-app way to self-promote.
-4. **Set prices and publish** the two paid courses at `/admin/courses`. They ship
-   unpublished at 0 EGP because the client had not set prices.
+4. **Set prices and publish** at `/admin/courses`. الجمال يبدأ من الداخل still
+   ships unpublished at 0 EGP; الاستعداد للرضاعة is priced and announced as
+   قريباً, and opening it for sale is a toggle there.
 
 ### Courses seeded
 
 | Course | Access | State |
 |---|---|---|
 | بودكاست الواحة | `free` | **Published.** 8 YouTube episodes, open to everyone |
-| كورس الاستعداد للرضاعة قبل الولادة | `paid` | Draft — needs price |
+| كورس الاستعداد للرضاعة قبل الولادة | `paid` | **Published as قريباً.** Priced 600 EGP, not yet open |
 | الجمال يبدأ من الداخل | `paid` | Draft — needs price and curriculum |
 
 `courses.access` decides the whole flow. A `free` course has every lesson
