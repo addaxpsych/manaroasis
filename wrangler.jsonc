@@ -13,10 +13,19 @@
   // PUBLIC_SITE_URL must ALSO be set as a build variable, not just here:
   // canonical URLs, OG tags, JSON-LD and the sitemap are baked in at build
   // time, so a runtime-only value would not reach them.
+  // These four MUST be set as SECRETS in Cloudflare, not as plaintext vars:
+  //   PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY,
+  //   SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY
+  // Secrets survive a deploy; plaintext vars set in the dashboard are
+  // OVERWRITTEN by this `vars` block every time the Worker is deployed.
+  // The Supabase keys are only ever read server-side (nothing Supabase
+  // touches the browser), so keeping them out of the repo costs nothing.
   "vars": {
     "PUBLIC_SITE_URL": "https://manaroasis.workers.dev",
     "PUBLIC_WHATSAPP": "+201010429267",
     "PUBLIC_PHONE": "01010429267",
-    "PUBLIC_EMAIL": "Dr.manar.mobarez.clinic@gmail.com"
+    "PUBLIC_EMAIL": "Dr.manar.mobarez.clinic@gmail.com",
+    "EMAIL_FROM": "onboarding@resend.dev",
+    "ADMIN_NOTIFY_EMAIL": "Dr.manar.mobarez.clinic@gmail.com"
   }
 }
