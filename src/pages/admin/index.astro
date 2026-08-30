@@ -1,0 +1,135 @@
+---
+import Dashboard from '../../layouts/Dashboard.astro';
+import { requireAdmin } from '../../lib/guards';
+
+const auth = requireAdmin(Astro);
+if ('redirect' in auth) return auth.redirect;
+const { profile } = auth;
+
+const supabase = Astro.locals.supabase;
+
+const count = async (
+  table: 'enrollment_requests' | 'enrollments' | 'profiles' | 'contact_messages' | 'courses',
+  apply?: (q: any) => any,
+) => {
+  let query = supabase.from(table).select('*', { count: 'exact', head: true });
+  if (apply) query = apply(query);
+  const { count: n } = await query;
+  return n ?? 0;
+};
+
+const [newRequests, activeEnrollments, students, unreadMessages, publishedCourses] =
+  await Promise.all([
+    count('enrollment_requests', (q) => q.eq('status', 'new')),
+    count('enrollments', (q) => q.eq('status', 'active')),
+    count('profiles', (q) => q.eq('role', 'customer')),
+    count('contact_messages', (q) => q.eq('status', 'new')),
+    count('courses', (q) => q.eq('is_published', true)),
+  ]);
+
+const { data: latestRequests } = await supabase
+  .from('enrollment_requests')
+  .select('id, full_name, phone, status, created_at, course:courses(title_ar)')
+  .order('created_at', { ascending: false })
+  .limit(5);
+
+const tiles = [
+  { label: 'طلبات جديدة', value: newRequests, href: '/admin/requests', accent: true },
+  { label: 'اشتراكات مفعّلة', value: activeEnrollments, href: '/admin/students' },
+  { label: 'الدارسات', value: students, href: '/admin/students' },
+  { label: 'رسائل غير مقروءة', value: unreadMessages, href: '/admin/messages' },
+  { label: 'كورسات منشورة', value: publishedCourses, href: '/admin/courses' },
+];
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' });
+---
+
+<Dashboard title="لوحة تحكم المدير" profile={profile} admin>
+  <header class="mb-8">
+    <h1 class="text-3xl text-oasis-900">لوحة تحكم المدير</h1>
+    <p class="mt-2 text-sm text-ink-soft">نظرة سريعة على طلبات الالتحاق والدارسات.</p>
+  </header>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    {
+      tiles.map((tile) => (
+        <a
+          href={tile.href}
+          class:list={[
+            'rounded-2xl border p-6 transition hover:-translate-y-1 hover:shadow-md',
+            tile.accent && tile.value > 0
+              ? 'border-gold-500/60 bg-gold-200/35'
+              : 'border-sand-400/50 bg-white',
+          ]}
+        >
+          <p class="num text-3xl font-extrabold text-oasis-900">{tile.value}</p>
+          <p class="mt-1.5 text-xs text-ink-soft">{tile.label}</p>
+        </a>
+      ))
+    }
+  </div>
+
+  <section class="mt-10">
+    <div class="mb-4 flex items-center justify-between">
+      <h2 class="text-xl text-oasis-900">أحدث الطلبات</h2>
+      <a href="/admin/requests" class="text-sm font-semibold text-oasis-700 hover:text-gold-600">
+        كل الطلبات ←
+      </a>
+    </div>
+
+    {
+      (latestRequests ?? []).length === 0 ? (
+        <p class="rounded-2xl border border-sand-400/50 bg-white p-8 text-center text-sm text-ink-soft">
+          مفيش طلبات لسه.
+        </p>
+      ) : (
+        <div class="overflow-x-auto rounded-2xl border border-sand-400/50 bg-white">
+          <table class="w-full text-start text-sm">
+            <thead class="border-b border-sand-400/50 bg-sand-50 text-xs text-ink-soft">
+              <tr>
+                <th class="px-5 py-3 text-start font-semibold">الاسم</th>
+                <th class="px-5 py-3 text-start font-semibold">الكورس</th>
+                <th class="px-5 py-3 text-start font-semibold">الهاتف</th>
+                <th class="px-5 py-3 text-start font-semibold">الحالة</th>
+                <th class="px-5 py-3 text-start font-semibold">التاريخ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(latestRequests ?? []).map((r: any) => (
+                <tr class="border-b border-sand-400/30 last:border-0">
+                  <td class="px-5 py-3.5 font-semibold text-oasis-900">{r.full_name}</td>
+                  <td class="px-5 py-3.5 text-ink-soft">{r.course?.title_ar ?? '—'}</td>
+                  <td class="num px-5 py-3.5 text-ink-soft">{r.phone}</td>
+                  <td class="px-5 py-3.5">
+                    <span
+                      class:list={[
+                        'rounded-full px-2.5 py-1 text-xs font-semibold',
+                        r.status === 'new'
+                          ? 'bg-gold-200 text-gold-600'
+                          : r.status === 'enrolled'
+                            ? 'bg-oasis-700/15 text-oasis-700'
+                            : 'bg-sand-200 text-ink-soft',
+                      ]}
+                    >
+                      {r.status === 'new'
+                        ? 'جديد'
+                        : r.status === 'contacted'
+                          ? 'تم التواصل'
+                          : r.status === 'paid'
+                            ? 'تم الدفع'
+                            : r.status === 'enrolled'
+                              ? 'تم التفعيل'
+                              : 'مرفوض'}
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5 text-xs text-ink-faint">{formatDate(r.created_at)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+  </section>
+</Dashboard>

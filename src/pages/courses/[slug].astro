@@ -1,0 +1,272 @@
+---
+import Marketing from '../../layouts/Marketing.astro';
+import Rosette from '../../components/brand/Rosette.astro';
+import Divider from '../../components/brand/Divider.astro';
+import Button from '../../components/ui/Button.astro';
+import WhatsAppIcon from '../../components/ui/WhatsAppIcon.astro';
+import EnrollRequestForm from '../../components/islands/EnrollRequestForm';
+import { getCourseOutline, formatPrice } from '../../lib/courses';
+import { getDoctor } from '../../config/team';
+import { waLink } from '../../config/site';
+import { courseSchema, breadcrumbSchema } from '../../lib/schema';
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/courses');
+
+const course = await getCourseOutline(Astro.locals.supabase, slug);
+if (!course || !course.is_published) return Astro.redirect('/courses');
+
+const price = formatPrice(course);
+const instructor = course.instructor_slug ? getDoctor(course.instructor_slug) : undefined;
+const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
+const waMessage = `السلام عليكم، حابة أعرف تفاصيل ${course.title_ar}`;
+
+/* Is this visitor already enrolled? Drives the CTA: an enrolled user should
+   land in the player, not be asked to request enrollment again. */
+const user = Astro.locals.user;
+let isEnrolled = false;
+if (user) {
+  const { data } = await Astro.locals.supabase
+    .from('enrollments')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('course_id', course.id)
+    .eq('status', 'active')
+    .maybeSingle();
+  isEnrolled = Boolean(data);
+}
+
+const schema = [
+  courseSchema({
+    title: course.title_ar,
+    description: course.description_ar ?? course.hook_ar ?? '',
+    slug: course.slug,
+    instructorName: instructor?.name,
+  }),
+  breadcrumbSchema([
+    { name: 'الرئيسية', path: '/' },
+    { name: 'الكورسات', path: '/courses' },
+    { name: course.title_ar, path: `/courses/${course.slug}` },
+  ]),
+];
+---
+
+<Marketing
+  title={course.title_ar}
+  description={course.description_ar ?? course.hook_ar ?? course.title_ar}
+  theme={course.theme}
+  image={course.cover_image ?? undefined}
+  waMessage={waMessage}
+  schema={schema}
+>
+  <!-- ── HERO ── -->
+  <section class="relative overflow-hidden bg-[var(--surface)]">
+    <div class="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.15fr_0.85fr]">
+      <div>
+        <nav aria-label="مسار التنقل" class="mb-6 text-xs text-ink-faint">
+          <a href="/" class="hover:text-[var(--accent)]">الرئيسية</a>
+          <span class="mx-2">/</span>
+          <a href="/courses" class="hover:text-[var(--accent)]">الكورسات</a>
+        </nav>
+
+        {
+          course.delivery_label && (
+            <span class="inline-flex items-center gap-2 rounded-full border border-[var(--ornament)]/45 bg-white/70 px-4 py-1.5 text-xs font-semibold text-[var(--accent)]">
+              <Rosette size={11} />
+              {course.delivery_label}
+            </span>
+          )
+        }
+
+        <h1 class="mt-5 text-[2rem] leading-[1.35] text-[var(--accent-strong)] sm:text-[2.5rem]">
+          {course.title_ar}
+        </h1>
+
+        {
+          course.hook_ar && (
+            <p class="mt-5 max-w-xl text-lg leading-loose text-[var(--ornament)]">
+              «{course.hook_ar}»
+            </p>
+          )
+        }
+
+        {
+          course.description_ar && (
+            <p class="mt-5 max-w-xl leading-loose text-ink-soft">{course.description_ar}</p>
+          )
+        }
+
+        {
+          instructor && (
+            <a href={`/team/${instructor.slug}`} class="mt-8 inline-flex items-center gap-3.5 group">
+              <img
+                src={instructor.photo}
+                alt={instructor.name}
+                width="120"
+                height="150"
+                class="h-16 w-14 rounded-[1.75rem_1.75rem_0.5rem_0.5rem] border border-[var(--hairline)] object-cover"
+              />
+              <span>
+                <span class="block text-xs text-ink-faint">مع</span>
+                <span class="block text-base font-bold text-[var(--accent-strong)] group-hover:text-[var(--ornament)]">
+                  {instructor.name}
+                </span>
+                <span class="block text-xs text-ink-soft">{instructor.role}</span>
+              </span>
+            </a>
+          )
+        }
+
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          {
+            isEnrolled ? (
+              <Button href={`/dashboard/courses/${course.slug}`} size="lg">
+                اكملي الكورس
+              </Button>
+            ) : (
+              <Button href="#enroll" size="lg">اطلبي الالتحاق</Button>
+            )
+          }
+          <Button href={waLink(waMessage)} variant="whatsapp" size="lg" external>
+            <WhatsAppIcon size={18} /> اسألي على واتساب
+          </Button>
+        </div>
+      </div>
+
+      {
+        course.cover_image && (
+          <div class="relative mx-auto w-full max-w-md">
+            <div class="absolute -inset-3 rounded-[7rem_7rem_1.5rem_1.5rem] border border-[var(--ornament)]/25" />
+            <img
+              src={course.cover_image}
+              alt={course.title_ar}
+              width="1000"
+              height="1000"
+              loading="eager"
+              class="relative aspect-square w-full rounded-[6rem_6rem_1rem_1rem] border border-[var(--hairline)] object-cover shadow-xl"
+            />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ── HIGHLIGHTS ── -->
+  {
+    course.highlights.length > 0 && (
+      <section class="border-y border-[var(--hairline)] bg-[var(--surface-raised)] py-12">
+        <div class="mx-auto max-w-6xl px-6">
+          <ul class="grid gap-6 sm:grid-cols-3 lg:grid-cols-5">
+            {course.highlights.map((h) => (
+              <li class="text-center">
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[var(--ornament)]/40">
+                  <Rosette size={18} class="text-[var(--ornament)]" />
+                </div>
+                <p class="mt-3 text-sm font-semibold leading-relaxed text-[var(--accent-strong)]">{h}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- ── CURRICULUM + ENROL ── -->
+  <section class="mx-auto max-w-7xl px-6 py-16">
+    <div class="grid gap-12 lg:grid-cols-[1.25fr_0.75fr]">
+      <div>
+        <h2 class="text-2xl text-[var(--accent-strong)]">محتوى الكورس</h2>
+        <p class="mt-2 text-sm text-ink-soft">
+          {course.modules.length} وحدات · {totalLessons} درس
+        </p>
+
+        <Divider class="my-8" />
+
+        {
+          course.modules.length === 0 ? (
+            <p class="rounded-2xl border border-[var(--hairline)] bg-[var(--surface-raised)] p-6 text-sm text-ink-soft">
+              محتوى الكورس قيد الإعداد، وهيتم تحديثه قريباً.
+            </p>
+          ) : (
+            <div class="space-y-4">
+              {course.modules.map((module, index) => (
+                <details
+                  class="group overflow-hidden rounded-2xl border border-[var(--hairline)] bg-[var(--surface-raised)]"
+                  open={index === 0}
+                >
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-6 transition hover:bg-[var(--surface)]">
+                    <span class="flex items-start gap-3.5">
+                      <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-white">
+                        {index + 1}
+                      </span>
+                      <span>
+                        <span class="block text-base font-bold text-[var(--accent-strong)]">
+                          {module.title_ar}
+                        </span>
+                        {module.summary_ar && (
+                          <span class="mt-1 block text-xs leading-relaxed text-ink-soft">
+                            {module.summary_ar}
+                          </span>
+                        )}
+                      </span>
+                    </span>
+                    <span class="shrink-0 text-xs text-ink-faint">
+                      {module.lessons.length} دروس
+                    </span>
+                  </summary>
+
+                  <ul class="border-t border-[var(--hairline)]">
+                    {module.lessons.map((lesson) => (
+                      <li class="flex items-center justify-between gap-3 border-b border-[var(--hairline)]/60 px-6 py-3.5 last:border-0">
+                        <span class="flex items-center gap-2.5 text-sm text-ink-soft">
+                          <Rosette size={11} class="shrink-0 text-[var(--ornament)]" />
+                          {lesson.title_ar}
+                        </span>
+                        {lesson.is_preview && (
+                          <span class="shrink-0 rounded-full bg-[var(--accent)]/12 px-2.5 py-0.5 text-xs font-semibold text-[var(--accent)]">
+                            مجاني
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
+            </div>
+          )
+        }
+      </div>
+
+      <!-- ── Sticky enrol card ── -->
+      <aside id="enroll" class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-[3rem_3rem_1rem_1rem] border border-[var(--hairline)] bg-[var(--surface-raised)] p-8 shadow-sm">
+          <div class="text-center">
+            <p class="text-xs font-semibold tracking-widest text-ink-faint">قيمة الاشتراك</p>
+            <p class="mt-2 text-3xl font-extrabold text-[var(--accent-strong)]">{price.display}</p>
+            {price.was && <p class="mt-1 text-sm text-ink-faint line-through">{price.was}</p>}
+          </div>
+
+          <Divider class="my-6" />
+
+          {
+            isEnrolled ? (
+              <div class="text-center">
+                <p class="text-sm leading-loose text-ink-soft">أنتِ مشتركة في الكورس ده بالفعل.</p>
+                <Button href={`/dashboard/courses/${course.slug}`} class="mt-5 w-full">
+                  اكملي الكورس
+                </Button>
+              </div>
+            ) : (
+              <EnrollRequestForm
+                client:load
+                courseId={course.id}
+                courseTitle={course.title_ar}
+                whatsappHref={waLink(`السلام عليكم، حابة أحجز في ${course.title_ar}`)}
+              />
+            )
+          }
+        </div>
+      </aside>
+    </div>
+  </section>
+</Marketing>

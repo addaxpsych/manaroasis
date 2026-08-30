@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Private areas — no value in the index and shouldn't be crawled.
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /auth
+Disallow: /api
+
+Sitemap: https://manaroasis.com/sitemap-index.xml

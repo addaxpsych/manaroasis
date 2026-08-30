@@ -1,0 +1,28 @@
+---
+import Rosette from '../brand/Rosette.astro';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  align?: 'start' | 'center';
+  class?: string;
+}
+const { eyebrow, title, lead, align = 'start', class: className = '' } = Astro.props;
+const alignment = align === 'center' ? 'text-center items-center mx-auto' : 'text-start items-start';
+---
+<div class={`flex flex-col ${alignment} ${className}`}>
+  {eyebrow && (
+    <span class="mb-3 inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-[var(--ornament)]">
+      <Rosette size={12} />
+      {eyebrow}
+    </span>
+  )}
+  <h2 class="max-w-3xl text-3xl leading-tight text-[var(--accent-strong)] sm:text-4xl">
+    {title}
+  </h2>
+  {lead && (
+    <p class={`mt-4 max-w-2xl text-[0.98rem] leading-loose text-ink-soft ${align === 'center' ? 'mx-auto' : ''}`}>
+      {lead}
+    </p>
+  )}
+</div>

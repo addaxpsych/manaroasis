@@ -1,0 +1,11 @@
+---
+/** Gold hairline broken by a centred rosette — the posters' section divider. */
+import Rosette from './Rosette.astro';
+interface Props { class?: string }
+const { class: className = '' } = Astro.props;
+---
+<div class={`flex items-center gap-4 text-[var(--ornament)] ${className}`} aria-hidden="true">
+  <span class="h-px flex-1 bg-gradient-to-l from-transparent via-current to-transparent opacity-60"></span>
+  <Rosette size={14} />
+  <span class="h-px flex-1 bg-gradient-to-r from-transparent via-current to-transparent opacity-60"></span>
+</div>

@@ -1,0 +1,44 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'outline' | 'whatsapp';
+  size?: 'md' | 'lg';
+  class?: string;
+  type?: 'button' | 'submit';
+  external?: boolean;
+}
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  class: className = '',
+  type = 'button',
+  external = false,
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition ' +
+  'duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-60';
+
+const sizes = {
+  md: 'px-6 py-3 text-sm',
+  lg: 'px-8 py-4 text-base',
+};
+
+const variants = {
+  primary:
+    'bg-[var(--accent-strong)] text-sand-50 shadow-sm hover:bg-[var(--accent)] hover:-translate-y-0.5',
+  outline:
+    'border border-[var(--accent)]/35 text-[var(--accent-strong)] hover:bg-[var(--accent)]/8 hover:-translate-y-0.5',
+  whatsapp: 'bg-[#1f7a4d] text-white shadow-sm hover:bg-[#186b42] hover:-translate-y-0.5',
+};
+
+const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`;
+const rel = external ? 'noopener noreferrer' : undefined;
+const target = external ? '_blank' : undefined;
+---
+{href ? (
+  <a href={href} class={cls} rel={rel} target={target}><slot /></a>
+) : (
+  <button type={type} class={cls}><slot /></button>
+)}

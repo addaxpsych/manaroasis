@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import { site } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Opts the page into the botanical palette (used by wellness courses). */
+  theme?: 'oasis' | 'botanical';
+  image?: string;
+  noindex?: boolean;
+  /** Extra JSON-LD to merge into the page head. */
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  theme = 'oasis',
+  image = '/images/og-default.jpg',
+  noindex = false,
+  schema,
+} = Astro.props;
+
+const fullTitle = title === site.name ? title : `${title} | ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://manaroasis.com');
+const ogImage = new URL(image, Astro.site ?? 'https://manaroasis.com');
+---
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme={theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_EG" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#1b3d30" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    {schema && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(schema)}
+      />
+    )}
+  </head>
+  <body class="min-h-dvh">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:start-3 focus:z-50 focus:rounded-lg focus:bg-oasis-900 focus:px-4 focus:py-2 focus:text-sand-50"
+    >
+      تخطَّ إلى المحتوى
+    </a>
+    <slot />
+  </body>
+</html>

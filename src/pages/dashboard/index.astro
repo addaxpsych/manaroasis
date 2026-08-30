@@ -1,0 +1,169 @@
+---
+import Dashboard from '../../layouts/Dashboard.astro';
+import Rosette from '../../components/brand/Rosette.astro';
+import Button from '../../components/ui/Button.astro';
+import { requireUser } from '../../lib/guards';
+import { progressPercent } from '../../lib/courses';
+import type { Course } from '../../lib/supabase/types';
+
+const auth = requireUser(Astro);
+if ('redirect' in auth) return auth.redirect;
+const { profile, userId } = auth;
+
+const supabase = Astro.locals.supabase;
+
+/* Active enrollments with their course. */
+const { data: enrollments } = await supabase
+  .from('enrollments')
+  .select('id, status, created_at, course:courses(*)')
+  .eq('user_id', userId)
+  .in('status', ['active', 'pending'])
+  .order('created_at', { ascending: false });
+
+const rows = (enrollments ?? []) as unknown as {
+  id: string;
+  status: string;
+  course: Course | null;
+}[];
+
+const courseIds = rows.map((r) => r.course?.id).filter((id): id is string => Boolean(id));
+
+/* Lesson totals per course, and how many this user has completed. Two small
+   queries beat N per-course round trips. */
+const totals = new Map<string, number>();
+const completed = new Map<string, number>();
+
+if (courseIds.length > 0) {
+  const { data: modules } = await supabase
+    .from('modules')
+    .select('id, course_id')
+    .in('course_id', courseIds);
+
+  const moduleIds = (modules ?? []).map((m) => m.id);
+  const moduleToCourse = new Map((modules ?? []).map((m) => [m.id, m.course_id]));
+
+  if (moduleIds.length > 0) {
+    const { data: lessons } = await supabase
+      .from('lessons')
+      .select('id, module_id')
+      .in('module_id', moduleIds);
+
+    const lessonToCourse = new Map<string, string>();
+    for (const lesson of lessons ?? []) {
+      const courseId = moduleToCourse.get(lesson.module_id);
+      if (!courseId) continue;
+      lessonToCourse.set(lesson.id, courseId);
+      totals.set(courseId, (totals.get(courseId) ?? 0) + 1);
+    }
+
+    const { data: progress } = await supabase
+      .from('lesson_progress')
+      .select('lesson_id, completed_at')
+      .eq('user_id', userId)
+      .not('completed_at', 'is', null);
+
+    for (const p of progress ?? []) {
+      const courseId = lessonToCourse.get(p.lesson_id);
+      if (!courseId) continue;
+      completed.set(courseId, (completed.get(courseId) ?? 0) + 1);
+    }
+  }
+}
+
+const firstName = profile.full_name.split(' ')[0] || '';
+---
+
+<Dashboard title="كورساتي" profile={profile}>
+  <header class="mb-9">
+    <h1 class="text-3xl text-oasis-900">
+      أهلاً {firstName}
+    </h1>
+    <p class="mt-2 text-sm text-ink-soft">كل كورساتك وتقدمك في مكان واحد.</p>
+  </header>
+
+  {
+    rows.length === 0 ? (
+      <div class="rounded-[3rem_3rem_1rem_1rem] border border-sand-400/50 bg-white p-12 text-center">
+        <Rosette size={26} class="mx-auto text-gold-500" />
+        <h2 class="mt-5 text-2xl text-oasis-900">لسه مالكيش كورسات</h2>
+        <p class="mx-auto mt-4 max-w-md leading-loose text-ink-soft">
+          اختاري كورس من الكورسات المتاحة واطلبي الالتحاق، وهنفعّله لك بعد تأكيد الدفع.
+        </p>
+        <div class="mt-8">
+          <Button href="/courses" size="lg">شوفي الكورسات</Button>
+        </div>
+      </div>
+    ) : (
+      <div class="grid gap-6 md:grid-cols-2">
+        {rows.map((row) => {
+          const course = row.course;
+          if (!course) return null;
+          const total = totals.get(course.id) ?? 0;
+          const done = completed.get(course.id) ?? 0;
+          const percent = progressPercent(total, done);
+          const pending = row.status === 'pending';
+
+          return (
+            <article
+              data-theme={course.theme}
+              class="flex flex-col overflow-hidden rounded-[3rem_3rem_1rem_1rem] border border-sand-400/50 bg-white"
+            >
+              <div class="flex gap-5 p-6">
+                {course.cover_image && (
+                  <img
+                    src={course.cover_image}
+                    alt={course.title_ar}
+                    width="200"
+                    height="200"
+                    loading="lazy"
+                    class="h-24 w-24 shrink-0 rounded-2xl border border-sand-400/50 object-cover"
+                  />
+                )}
+                <div class="min-w-0 flex-1">
+                  <h2 class="text-lg leading-snug text-oasis-900">{course.title_ar}</h2>
+                  {pending ? (
+                    <p class="mt-2 inline-block rounded-full bg-gold-200/60 px-3 py-1 text-xs font-semibold text-gold-600">
+                      في انتظار تأكيد الدفع
+                    </p>
+                  ) : (
+                    <p class="mt-2 text-xs text-ink-soft">
+                      {done} من {total} درس
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {!pending && (
+                <div class="px-6">
+                  <div
+                    class="h-2 overflow-hidden rounded-full bg-sand-200"
+                    role="progressbar"
+                    aria-valuenow={percent}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label={`تقدمك في ${course.title_ar}`}
+                  >
+                    <div class="h-full rounded-full bg-oasis-700 transition-all" style={`width:${percent}%`} />
+                  </div>
+                  <p class="mt-2 text-end text-xs font-semibold text-oasis-700">{percent}%</p>
+                </div>
+              )}
+
+              <div class="mt-auto p-6 pt-5">
+                {pending ? (
+                  <p class="text-sm leading-loose text-ink-soft">
+                    هنفعّل الكورس فور تأكيد الدفع، وهيوصلك إيميل.
+                  </p>
+                ) : (
+                  <Button href={`/dashboard/courses/${course.slug}`} class="w-full">
+                    {done === 0 ? 'ابدئي الكورس' : 'كملي من حيث وقفتي'}
+                  </Button>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    )
+  }
+</Dashboard>

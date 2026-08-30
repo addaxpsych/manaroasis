@@ -1,0 +1,98 @@
+---
+import Auth from '../../layouts/Auth.astro';
+
+/**
+ * Handled entirely server-side: the form posts back to this route, so signing
+ * in works with JavaScript disabled and no Supabase credentials are needed in
+ * the browser bundle.
+ */
+let error = '';
+const nextParam = Astro.url.searchParams.get('next');
+const next = nextParam?.startsWith('/') ? nextParam : '/dashboard';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const email = String(form.get('email') ?? '').trim();
+  const password = String(form.get('password') ?? '');
+
+  if (!email || !password) {
+    error = 'من فضلك اكتبي البريد وكلمة المرور.';
+  } else {
+    const { error: authError } = await Astro.locals.supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (authError) {
+      // Deliberately generic: distinguishing "wrong password" from "no such
+      // account" tells an attacker which addresses are registered.
+      error =
+        authError.message === 'Email not confirmed'
+          ? 'لازم تأكدي بريدك الإلكتروني الأول. راجعي الرسالة المرسلة لك.'
+          : 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+    } else {
+      return Astro.redirect(next);
+    }
+  }
+}
+
+// Signed-in users have no reason to see this page.
+if (Astro.request.method === 'GET' && Astro.locals.user) {
+  return Astro.redirect('/dashboard');
+}
+
+const field =
+  'w-full rounded-xl border border-sand-400/60 bg-sand-50 px-4 py-3 text-sm text-ink ' +
+  'placeholder:text-ink-faint focus:border-oasis-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-oasis-700/15';
+const label = 'mb-1.5 block text-sm font-semibold text-oasis-900';
+---
+
+<Auth
+  title="تسجيل الدخول"
+  description="تسجيل الدخول لحسابك في واحة د. منار مبارز"
+  heading="أهلاً بعودتك"
+  sub="سجلي دخولك عشان تكملي كورساتك."
+>
+  <form method="POST" class="space-y-4">
+    {
+      error && (
+        <p role="alert" class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+          {error}
+        </p>
+      )
+    }
+
+    <div>
+      <label class={label} for="email">البريد الإلكتروني</label>
+      <input
+        id="email" name="email" type="email" required autocomplete="email"
+        dir="ltr" class={`${field} text-start`} placeholder="name@example.com"
+      />
+    </div>
+
+    <div>
+      <div class="mb-1.5 flex items-baseline justify-between gap-3">
+        <label class="text-sm font-semibold text-oasis-900" for="password">كلمة المرور</label>
+        <a href="/auth/forgot-password" class="text-xs text-oasis-700 hover:text-gold-600">
+          نسيتي كلمة المرور؟
+        </a>
+      </div>
+      <input
+        id="password" name="password" type="password" required autocomplete="current-password"
+        dir="ltr" class={`${field} text-start`} placeholder="••••••••"
+      />
+    </div>
+
+    <button
+      type="submit"
+      class="w-full rounded-xl bg-oasis-900 px-6 py-3.5 text-sm font-bold text-sand-50 transition hover:bg-oasis-700"
+    >
+      تسجيل الدخول
+    </button>
+  </form>
+
+  <p class="mt-6 text-center text-sm text-ink-soft">
+    لسه مالكيش حساب؟
+    <a href="/auth/register" class="font-semibold text-oasis-700 hover:text-gold-600">أنشئي حساب</a>
+  </p>
+</Auth>

@@ -1,0 +1,114 @@
+---
+export const prerender = true;
+
+import Marketing from '../layouts/Marketing.astro';
+import Button from '../components/ui/Button.astro';
+import Rosette from '../components/brand/Rosette.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import { waLink, telLink, site } from '../config/site';
+import { breadcrumbSchema } from '../lib/schema';
+
+/* The three roles come straight from the clinic's own poster
+   (`designs/online sessions.jpg`) and are not expanded on — the scope of
+   an online consultation is a clinical boundary, not marketing copy. */
+const roles = [
+  {
+    title: 'رأي طبي ثانٍ',
+    body: 'مع مراجعة طبيب آخر قام بالفحص والتشخيص، ونحتاج لعرض الحالة على متخصص آخر لإبداء رأي ثانٍ في خطة العلاج.',
+  },
+  {
+    title: 'المتابعات الدورية',
+    body: 'لتعديلات نمط الحياة المتفق عليها وفقاً للتشخيص المحدد مسبقاً بالفحص.',
+  },
+  {
+    title: 'التثقيف الطبي',
+    body: 'عن حالة صحية تم تشخيصها بالفعل أو بعد استبعاد أي مرض محتمل.',
+  },
+];
+
+const waMessage = 'السلام عليكم، حابة أحجز استشارة أونلاين';
+---
+
+<Marketing
+  title="الاستشارات الطبية أونلاين"
+  description="الاستشارات الطبية أونلاين في الواحة: رأي طبي ثانٍ، المتابعات الدورية، والتثقيف الطبي. لا تغني عن المقابلة في العيادة للفحص والتشخيص."
+  waMessage={waMessage}
+  schema={breadcrumbSchema([
+    { name: 'الرئيسية', path: '/' },
+    { name: 'الاستشارات الطبية أونلاين', path: '/online-consultations' },
+  ])}
+>
+  <section class="pattern-sand relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50/85 to-sand-100"></div>
+    <div class="relative mx-auto max-w-3xl px-6 py-16 text-center">
+      <Rosette size={26} class="mx-auto text-gold-500" />
+      <h1 class="mt-5 text-3xl leading-tight text-oasis-900 sm:text-4xl">
+        الاستشارات الطبية أونلاين في الواحة
+      </h1>
+      <p class="mt-5 leading-loose text-ink-soft">
+        دور المقابلات الطبية أونلاين محدود في أدوار معينة أهمها:
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-10">
+    <div class="grid gap-6 md:grid-cols-3">
+      {
+        roles.map((role) => (
+          <article class="rounded-[3rem_3rem_1rem_1rem] border border-sand-400/50 bg-white p-8 text-center">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-oasis-900">
+              <Rosette size={20} class="text-gold-400" />
+            </div>
+            <h2 class="mt-5 rounded-full bg-oasis-900 px-4 py-2 text-base text-sand-50">{role.title}</h2>
+            <p class="mt-4 text-sm leading-loose text-ink-soft">{role.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- The clinic's own disclaimer, reproduced verbatim. This is a clinical
+       and legal boundary, so it is given real weight rather than fine print. -->
+  <section class="mx-auto max-w-4xl px-6 pb-10">
+    <div class="flex items-start gap-4 rounded-2xl border-2 border-gold-500/45 bg-gold-200/25 p-7">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#a87c31"
+        stroke-width="2"
+        stroke-linecap="round"
+        class="mt-0.5 shrink-0"
+        aria-hidden="true"
+      >
+        <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+      </svg>
+      <p class="text-base font-bold leading-loose text-oasis-900">
+        المقابلات الطبية أونلاين لا تغني أبداً عن المقابلة في العيادة للفحص والتشخيص.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-6 pb-20">
+    <div class="rounded-[4rem_4rem_1.5rem_1.5rem] bg-oasis-900 p-10 text-center text-sand-100 lg:p-14">
+      <h2 class="text-2xl text-sand-50">من أجل موعد أونلاين</h2>
+      <p class="mx-auto mt-4 max-w-lg leading-loose text-sand-200/75">
+        كلمينا على واتساب ونظبط لك أقرب موعد متاح، أو اتصلي بنا مباشرة.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button href={waLink(waMessage)} variant="whatsapp" size="lg" external>
+          <WhatsAppIcon size={18} /> تواصلي على واتساب
+        </Button>
+        <Button
+          href={telLink}
+          variant="outline"
+          size="lg"
+          class="!border-sand-200/30 !text-sand-100 hover:!bg-white/10"
+        >
+          <span class="num">{site.phone}</span>
+        </Button>
+      </div>
+    </div>
+  </section>
+</Marketing>

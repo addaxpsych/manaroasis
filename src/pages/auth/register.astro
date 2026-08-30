@@ -1,0 +1,128 @@
+---
+import Auth from '../../layouts/Auth.astro';
+
+let error = '';
+let done = false;
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const fullName = String(form.get('fullName') ?? '').trim();
+  const phone = String(form.get('phone') ?? '').trim();
+  const email = String(form.get('email') ?? '').trim();
+  const password = String(form.get('password') ?? '');
+
+  if (fullName.length < 2) {
+    error = 'من فضلك اكتبي اسمك بالكامل.';
+  } else if (!/^(\+?20)?0?1[0125][0-9]{8}$/.test(phone)) {
+    error = 'رقم الموبايل غير صحيح.';
+  } else if (password.length < 8) {
+    error = 'كلمة المرور لازم تكون 8 حروف على الأقل.';
+  } else {
+    const { error: authError } = await Astro.locals.supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // Consumed by the handle_new_user() trigger to populate profiles.
+        data: { full_name: fullName, phone },
+        emailRedirectTo: new URL('/auth/callback', Astro.url.origin).href,
+      },
+    });
+
+    if (authError) {
+      error =
+        authError.message.includes('already registered') ||
+        authError.message.includes('User already registered')
+          ? 'البريد ده مسجل عندنا بالفعل. جربي تسجيل الدخول.'
+          : 'حصلت مشكلة أثناء إنشاء الحساب. جربي تاني.';
+    } else {
+      done = true;
+    }
+  }
+}
+
+if (Astro.request.method === 'GET' && Astro.locals.user) {
+  return Astro.redirect('/dashboard');
+}
+
+const field =
+  'w-full rounded-xl border border-sand-400/60 bg-sand-50 px-4 py-3 text-sm text-ink ' +
+  'placeholder:text-ink-faint focus:border-oasis-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-oasis-700/15';
+const label = 'mb-1.5 block text-sm font-semibold text-oasis-900';
+---
+
+<Auth
+  title="إنشاء حساب"
+  description="أنشئي حساب في واحة د. منار مبارز للوصول لكورساتك"
+  heading={done ? 'خطوة أخيرة' : 'أنشئي حسابك'}
+  sub={done ? undefined : 'الحساب بيخليكِ توصلي لكورساتك وتتابعي تقدمك.'}
+>
+  {
+    done ? (
+      <div class="text-center">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-oasis-900">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f7efe1" stroke-width="2" stroke-linecap="round">
+            <path d="m3 7 9 6 9-6M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-9-4Z" />
+          </svg>
+        </div>
+        <p class="mt-5 leading-loose text-ink-soft">
+          بعتنا لك رسالة تأكيد على بريدك الإلكتروني. افتحي الرسالة واضغطي على الرابط
+          عشان تفعّلي حسابك.
+        </p>
+        <a href="/auth/login" class="mt-6 inline-block text-sm font-semibold text-oasis-700 hover:text-gold-600">
+          العودة لتسجيل الدخول
+        </a>
+      </div>
+    ) : (
+      <>
+        <form method="POST" class="space-y-4">
+          {error && (
+            <p role="alert" class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+              {error}
+            </p>
+          )}
+
+          <div>
+            <label class={label} for="fullName">الاسم بالكامل</label>
+            <input id="fullName" name="fullName" type="text" required autocomplete="name" class={field} placeholder="اسمك" />
+          </div>
+
+          <div>
+            <label class={label} for="phone">رقم الموبايل</label>
+            <input
+              id="phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
+              dir="ltr" class={`${field} text-start`} placeholder="01xxxxxxxxx"
+            />
+          </div>
+
+          <div>
+            <label class={label} for="email">البريد الإلكتروني</label>
+            <input
+              id="email" name="email" type="email" required autocomplete="email"
+              dir="ltr" class={`${field} text-start`} placeholder="name@example.com"
+            />
+          </div>
+
+          <div>
+            <label class={label} for="password">كلمة المرور</label>
+            <input
+              id="password" name="password" type="password" required minlength={8} autocomplete="new-password"
+              dir="ltr" class={`${field} text-start`} placeholder="8 حروف على الأقل"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-xl bg-oasis-900 px-6 py-3.5 text-sm font-bold text-sand-50 transition hover:bg-oasis-700"
+          >
+            إنشاء الحساب
+          </button>
+        </form>
+
+        <p class="mt-6 text-center text-sm text-ink-soft">
+          عندك حساب بالفعل؟
+          <a href="/auth/login" class="font-semibold text-oasis-700 hover:text-gold-600">سجلي دخولك</a>
+        </p>
+      </>
+    )
+  }
+</Auth>

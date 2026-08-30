@@ -1,0 +1,111 @@
+---
+import Logo from '../brand/Logo.astro';
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { navLinks, site, waLink, telLink } from '../../config/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+<header class="sticky top-0 z-40 border-b border-[var(--hairline)] bg-[var(--surface)]/92 backdrop-blur-md">
+  <!-- Contact strip: the clinic's own posters lead with the phone number,
+       so it stays visible rather than buried in the footer. -->
+  <div class="hidden bg-oasis-900 text-sand-100 lg:block">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-xs">
+      <p class="text-sand-200/85">{site.tagline}</p>
+      <div class="flex items-center gap-5">
+        <a href={telLink} class="num transition hover:text-gold-400">{site.phone}</a>
+        <span class="h-3 w-px bg-sand-200/25"></span>
+        <a href={waLink('السلام عليكم، حابة أحجز موعد')} target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-1.5 transition hover:text-gold-400">
+          <WhatsAppIcon size={14} /> احجزي على واتساب
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5" aria-label="التنقل الرئيسي">
+    <a href="/" class="shrink-0" aria-label={`${site.name} — الصفحة الرئيسية`}>
+      <Logo />
+    </a>
+
+    <ul class="hidden items-center gap-1 lg:flex">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+            class:list={[
+              'rounded-lg px-3 py-2 text-[0.9rem] font-medium transition',
+              isActive(link.href)
+                ? 'bg-[var(--accent)]/10 text-[var(--accent-strong)]'
+                : 'text-ink-soft hover:bg-[var(--accent)]/6 hover:text-[var(--accent-strong)]',
+            ]}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <a
+        href="/dashboard"
+        class="hidden rounded-xl border border-[var(--accent)]/30 px-4 py-2 text-sm font-semibold text-[var(--accent-strong)] transition hover:bg-[var(--accent)]/8 sm:inline-flex"
+      >
+        حسابي
+      </a>
+      <a
+        href={waLink('السلام عليكم، حابة أحجز موعد في الواحة')}
+        target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-xl bg-[#1f7a4d] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#186b42]"
+      >
+        <WhatsAppIcon size={16} />
+        <span class="hidden sm:inline">احجزي</span>
+      </a>
+
+      <button
+        type="button"
+        id="nav-toggle"
+        class="rounded-lg p-2 text-[var(--accent-strong)] lg:hidden"
+        aria-label="فتح القائمة"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-nav" hidden class="border-t border-[var(--hairline)] bg-[var(--surface)] lg:hidden">
+    <ul class="mx-auto max-w-7xl px-5 py-3">
+      {navLinks.map((link) => (
+        <li>
+          <a href={link.href}
+             class="block border-b border-[var(--hairline)]/60 py-3 text-[0.95rem] font-medium text-ink-soft last:border-0">
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href="/dashboard" class="block py-3 text-[0.95rem] font-semibold text-[var(--accent-strong)]">
+          حسابي وكورساتي
+        </a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('mobile-nav');
+  toggle?.addEventListener('click', () => {
+    const open = menu?.hasAttribute('hidden');
+    if (open) menu?.removeAttribute('hidden');
+    else menu?.setAttribute('hidden', '');
+    toggle.setAttribute('aria-expanded', String(!!open));
+    toggle.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
+  });
+</script>

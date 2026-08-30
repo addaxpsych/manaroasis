@@ -1,0 +1,86 @@
+---
+import Dashboard from '../../layouts/Dashboard.astro';
+import RequestsTable, { type RequestRow } from '../../components/islands/RequestsTable';
+import { requireAdmin } from '../../lib/guards';
+import { site } from '../../config/site';
+
+const auth = requireAdmin(Astro);
+if ('redirect' in auth) return auth.redirect;
+const { profile } = auth;
+
+/* Only these filters are honoured — the value lands in a SQL filter, so it is
+   matched against a fixed list rather than passed through. */
+const FILTERS = ['open', 'all', 'new', 'contacted', 'paid', 'enrolled', 'rejected'] as const;
+type Filter = (typeof FILTERS)[number];
+
+const requested = Astro.url.searchParams.get('status') ?? 'open';
+const filter: Filter = (FILTERS as readonly string[]).includes(requested)
+  ? (requested as Filter)
+  : 'open';
+
+let query = Astro.locals.supabase
+  .from('enrollment_requests')
+  .select('*, course:courses(id, title_ar)')
+  .order('created_at', { ascending: false })
+  .limit(200);
+
+if (filter === 'open') {
+  query = query.in('status', ['new', 'contacted', 'paid']);
+} else if (filter !== 'all') {
+  query = query.eq('status', filter);
+}
+
+const { data } = await query;
+
+const requests: RequestRow[] = ((data ?? []) as any[]).map((r) => ({
+  id: r.id,
+  full_name: r.full_name,
+  email: r.email,
+  phone: r.phone,
+  city: r.city,
+  notes: r.notes,
+  status: r.status,
+  created_at: r.created_at,
+  courseTitle: r.course?.title_ar ?? 'بدون كورس',
+  courseId: r.course?.id ?? null,
+}));
+
+const filters = [
+  { key: 'open', label: 'المفتوحة' },
+  { key: 'new', label: 'جديدة' },
+  { key: 'enrolled', label: 'المفعّلة' },
+  { key: 'all', label: 'الكل' },
+];
+
+const whatsappBase = `https://wa.me/${site.whatsapp.replace(/[^0-9]/g, '')}`;
+---
+
+<Dashboard title="طلبات الالتحاق" profile={profile} admin>
+  <header class="mb-6">
+    <h1 class="text-3xl text-oasis-900">طلبات الالتحاق</h1>
+    <p class="mt-2 text-sm text-ink-soft">
+      أكدي الدفع وفعّلي الاشتراك — الحساب بيتعمل تلقائياً والإيميل بيتبعت.
+    </p>
+  </header>
+
+  <nav class="mb-6 flex flex-wrap gap-2" aria-label="تصفية الطلبات">
+    {
+      filters.map((f) => (
+        <a
+          href={`/admin/requests?status=${f.key}`}
+          aria-current={filter === f.key ? 'page' : undefined}
+          class:list={[
+            'rounded-lg px-4 py-2 text-sm font-medium transition',
+            filter === f.key
+              ? 'bg-oasis-900 text-sand-50'
+              : 'border border-sand-400/60 text-ink-soft hover:bg-sand-100',
+          ]}
+        >
+          {f.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <RequestsTable client:load requests={requests} whatsappBase={whatsappBase} />
+</Dashboard>

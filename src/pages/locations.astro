@@ -1,0 +1,95 @@
+---
+export const prerender = true;
+
+import Marketing from '../layouts/Marketing.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import Rosette from '../components/brand/Rosette.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import { branches, waLink, telLink, mailLink, site } from '../config/site';
+import { breadcrumbSchema } from '../lib/schema';
+
+const mapUrl = (query: string) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+---
+
+<Marketing
+  title="أماكن العيادات"
+  description="واحة المعادي: Maadi Medical City، كورنيش المعادي، الدور الثاني، عيادة ٢١٤. واحة الرحاب: Gateway Mall، مدخل عيادات D1، الدور الثاني، عيادة 229."
+  schema={breadcrumbSchema([
+    { name: 'الرئيسية', path: '/' },
+    { name: 'أماكن العيادات', path: '/locations' },
+  ])}
+>
+  <section class="pattern-sand relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50/85 to-sand-100"></div>
+    <div class="relative mx-auto max-w-7xl px-6 py-16">
+      <SectionHeading
+        eyebrow="للحجز والاستفسار"
+        title="فرعين في القاهرة"
+        lead="اختاري الفرع الأقرب لك، وكلمينا على واتساب لحجز موعد."
+        align="center"
+      />
+      <p class="mt-8 text-center">
+        <a
+          href={telLink}
+          class="num inline-block rounded-2xl border border-gold-500/40 bg-white px-8 py-4 text-2xl font-extrabold text-oasis-900 shadow-sm transition hover:border-gold-500 hover:shadow-md"
+        >
+          {site.phone}
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 pb-20">
+    <div class="grid gap-8 md:grid-cols-2">
+      {
+        branches.map((b) => (
+          <article class="overflow-hidden rounded-[3.5rem_3.5rem_1rem_1rem] border border-sand-400/50 bg-white">
+            <header class="bg-oasis-900 px-8 py-5 text-center">
+              <h2 class="flex items-center justify-center gap-2 text-xl text-sand-50">
+                <Rosette size={15} class="text-gold-400" />
+                عنوان {b.name}
+              </h2>
+            </header>
+
+            <div class="p-8">
+              <p class="rounded-xl bg-sand-200/70 py-2.5 text-center text-base font-bold text-oasis-800">
+                {b.building}
+              </p>
+
+              <ul class="mt-6 space-y-3">
+                {b.lines.map((line) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-loose text-ink-soft">
+                    <Rosette size={11} class="mt-2 shrink-0 text-gold-500" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="mt-8 flex flex-wrap gap-3">
+                <Button href={waLink(`السلام عليكم، حابة أحجز موعد في ${b.name}`)} variant="whatsapp" external>
+                  <WhatsAppIcon size={16} /> احجزي هنا
+                </Button>
+                <Button href={mapUrl(b.mapQuery)} variant="outline" external>
+                  افتحي الخريطة
+                </Button>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 rounded-2xl border border-sand-400/50 bg-sand-50 p-8 text-center">
+      <h2 class="text-lg text-oasis-900">طرق تواصل أخرى</h2>
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm">
+        <a href={telLink} class="num font-semibold text-oasis-700 hover:text-gold-600">{site.phone}</a>
+        <a href={waLink()} target="_blank" rel="noopener noreferrer" class="font-semibold text-oasis-700 hover:text-gold-600">
+          واتساب
+        </a>
+        <a href={mailLink} dir="ltr" class="font-semibold text-oasis-700 hover:text-gold-600">{site.email}</a>
+      </div>
+    </div>
+  </section>
+</Marketing>

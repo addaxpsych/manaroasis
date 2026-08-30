@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "manaroasis",
+  "compatibility_date": "2026-08-28",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  // Public, non-secret values only. Secrets (SUPABASE_SERVICE_ROLE_KEY,
+  // RESEND_API_KEY) are set with `wrangler secret put` and must NEVER
+  // be committed here.
+  "vars": {
+    "PUBLIC_SITE_URL": "https://manaroasis.com",
+    "PUBLIC_WHATSAPP": "+201010429267",
+    "PUBLIC_PHONE": "01010429267",
+    "PUBLIC_EMAIL": "Dr.manar.mobarez.clinic@gmail.com"
+  }
+}

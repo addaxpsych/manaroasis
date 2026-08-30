@@ -1,0 +1,345 @@
+---
+export const prerender = true;
+
+import Marketing from '../layouts/Marketing.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import Button from '../components/ui/Button.astro';
+import Rosette from '../components/brand/Rosette.astro';
+import Divider from '../components/brand/Divider.astro';
+import WhatsAppIcon from '../components/ui/WhatsAppIcon.astro';
+import { site, branches, waLink, telLink } from '../config/site';
+import { services } from '../config/services';
+import { team } from '../config/team';
+import { clinicSchema } from '../lib/schema';
+
+const featuredServices = services.filter((s) => s.featured);
+const otherServices = services.filter((s) => !s.featured);
+
+/* The four promises that make the clinic "مساحة آمنة" rather than just a list
+   of specialties. This is the differentiator, so it sits above the services. */
+const promises = [
+  {
+    title: 'وقت كافٍ للسؤال',
+    body: 'الاستشارة مش خمس دقايق. عندك مساحة تحكي وتسألي كل اللي في بالك من غير استعجال.',
+  },
+  {
+    title: 'من غير لوم',
+    body: 'مفيش سؤال ساذج ومفيش قرار غلط. بنبدأ من مكانك الحالي ونمشي منه.',
+  },
+  {
+    title: 'خطة تنفع حياتك',
+    body: 'خطة واقعية تناسب بيتك وميزانيتك ووقتك — مش خطة مثالية على ورق.',
+  },
+  {
+    title: 'فريق كامل تحت سقف واحد',
+    body: 'من الحمل والرضاعة للأطفال والجلدية والجراحة، من غير ما تلفي بين عيادات.',
+  },
+];
+
+const stats = [
+  { n: '٧', l: 'أطباء متخصصين' },
+  { n: '٢', l: 'فروع بالقاهرة' },
+  { n: 'IBCLC', l: 'بورد دولي للرضاعة' },
+  { n: '٨', l: 'عيادات متخصصة' },
+];
+
+const courseHighlights = [
+  'استعدي بثقة',
+  'زيادة إدرار الحليب',
+  'وضعيات الرضاعة الصحيحة',
+  'تجنبي المشاكل الشائعة',
+  'رحلة رضاعة ناجحة بإذن الله',
+];
+---
+
+<Marketing title={site.name} description={site.positioning} schema={clinicSchema()}>
+  <!-- ── HERO ── -->
+  <section class="relative overflow-hidden pattern-sand">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50/80 via-sand-100/60 to-sand-100"></div>
+
+    <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full border border-gold-500/35 bg-white/70 px-4 py-1.5 text-xs font-semibold text-oasis-700">
+          <Rosette size={12} class="text-gold-500" />
+          {site.tagline}
+        </span>
+
+        <h1 class="mt-6 text-[2rem] leading-[1.4] text-oasis-900 sm:text-[2.6rem] lg:text-[3rem]">
+          مساحة آمنة
+          <span class="relative inline-block text-gold-600">
+            للأمهات
+            <span class="absolute -bottom-1 start-0 h-[3px] w-full rounded-full bg-gold-400/50"></span>
+          </span>
+        </h1>
+
+        <p class="mt-6 max-w-xl text-[1.05rem] leading-loose text-ink-soft">
+          واحة د. منار مبارز ليست مجرد عيادة رضاعة طبيعية وتغذية للأم والطفل، بل
+          مساحة آمنة تُسمَعين فيها، وتخرجين منها بخطة واضحة تقدرين على تنفيذها فعلاً.
+        </p>
+
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <Button
+            href={waLink('السلام عليكم، حابة أحجز موعد في الواحة')}
+            variant="whatsapp"
+            size="lg"
+            external
+          >
+            <WhatsAppIcon size={18} /> احجزي على واتساب
+          </Button>
+          <Button href="/services" variant="outline" size="lg">تعرفي على العيادات</Button>
+        </div>
+
+        <p class="mt-5 text-sm text-ink-faint">
+          أو اتصلي على
+          <a href={telLink} class="num font-semibold text-oasis-700 underline decoration-gold-400 underline-offset-4">
+            {site.phone}
+          </a>
+        </p>
+      </div>
+
+      <!-- Arch-framed portrait, echoing the Moorish arch used across the posters. -->
+      <div class="relative mx-auto w-full max-w-md">
+        <div class="absolute -inset-4 rounded-[9rem_9rem_2rem_2rem] border border-gold-500/25"></div>
+        <div class="relative overflow-hidden rounded-[8rem_8rem_1.5rem_1.5rem] border border-sand-400/50 bg-sand-200 shadow-xl shadow-oasis-900/10">
+          <img
+            src="/images/team/manar-mobarez.jpg"
+            alt="د. منار محمد مبارز — مؤسسة واحة د. منار مبارز"
+            width="640"
+            height="800"
+            loading="eager"
+            fetchpriority="high"
+            class="h-full w-full object-cover"
+          />
+        </div>
+        <div class="absolute -bottom-5 start-1/2 w-[85%] -translate-x-1/2 rounded-2xl border border-sand-400/50 bg-white/95 px-5 py-3.5 text-center shadow-lg backdrop-blur">
+          <p class="text-sm font-bold text-oasis-900">د. منار محمد مبارز</p>
+          <p class="mt-0.5 text-xs text-ink-soft">استشاري بالبورد الدولي للرضاعة الطبيعية (IBCLC)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative border-t border-gold-500/20 bg-white/55 backdrop-blur">
+      <dl class="mx-auto grid max-w-7xl grid-cols-2 px-6 md:grid-cols-4">
+        {
+          stats.map((stat) => (
+            <div class="border-s border-gold-500/15 px-3 py-6 text-center first:border-s-0">
+              <dt class="text-2xl font-extrabold text-oasis-800">{stat.n}</dt>
+              <dd class="mt-1 text-xs text-ink-soft">{stat.l}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- ── WHY A SAFE SPACE ── -->
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading
+      eyebrow="ليه الواحة"
+      title="العلاج بيبدأ لما تحسي إنك مسموعة"
+      lead="اخترنا اسم الواحة عن قصد. الواحة مكان بترتاحي فيه وسط طريق طويل — مش محطة سريعة تعدي منها."
+      align="center"
+      class="mb-14"
+    />
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        promises.map((p) => (
+          <article class="rounded-2xl border border-sand-400/45 bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-gold-500/45 hover:shadow-lg hover:shadow-oasis-900/5">
+            <Rosette size={20} class="text-gold-500" />
+            <h3 class="mt-4 text-lg text-oasis-900">{p.title}</h3>
+            <p class="mt-2.5 text-sm leading-loose text-ink-soft">{p.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ── CLINICS ── -->
+  <section class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading
+        eyebrow="العيادات"
+        title="تخصصات المرأة والطفل، تحت سقف واحد"
+        lead="كل عيادة يقودها متخصص في مجاله — عشان متلفيش بين أماكن، وعشان الفريق يتكلم مع بعضه في حالتك."
+        class="mb-12"
+      />
+
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {
+          featuredServices.map((s) => (
+            <a
+              href={`/services/${s.slug}`}
+              class="group flex flex-col rounded-[3rem_3rem_1rem_1rem] bg-gradient-to-b from-oasis-900 to-oasis-700 p-8 text-sand-100 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-oasis-900/20"
+            >
+              <Rosette size={22} class="text-gold-400" />
+              <h3 class="mt-4 text-xl text-sand-50">{s.title}</h3>
+              <p class="mt-3 flex-1 text-sm leading-loose text-sand-200/75">{s.summary}</p>
+              <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold-400">
+                اعرفي أكتر
+                <span class="transition group-hover:-translate-x-1">←</span>
+              </span>
+            </a>
+          ))
+        }
+
+        {
+          otherServices.map((s) => (
+            <a
+              href={`/services/${s.slug}`}
+              class="group flex flex-col rounded-2xl border border-sand-400/50 bg-sand-50 p-7 transition duration-300 hover:-translate-y-1.5 hover:border-gold-500/45 hover:shadow-lg hover:shadow-oasis-900/5"
+            >
+              <Rosette size={18} class="text-gold-500" />
+              <h3 class="mt-3.5 text-lg text-oasis-900">{s.title}</h3>
+              <p class="mt-2 flex-1 text-sm leading-loose text-ink-soft">{s.summary}</p>
+              <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-oasis-700">
+                اعرفي أكتر
+                <span class="transition group-hover:-translate-x-1">←</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COURSES ── -->
+  <section class="relative overflow-hidden bg-oasis-900 py-20 text-sand-100">
+    <div class="pattern-sand absolute inset-0 opacity-[0.06]"></div>
+    <div class="relative mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2">
+      <div>
+        <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-gold-400">
+          <Rosette size={12} /> كورسات الواحة
+        </span>
+        <h2 class="mt-4 text-3xl leading-tight text-sand-50 sm:text-4xl">اتعلمي في وقتك، من بيتك</h2>
+        <p class="mt-5 max-w-lg leading-loose text-sand-200/75">
+          كورسات مسجلة بالعربي مع د. منار مبارز — اتفرجي عليها في أي وقت، وتقدمك بيتحفظ
+          تلقائياً عشان تكملي من حيث ما وقفتي.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button href="/courses" size="lg" class="!bg-gold-500 !text-oasis-900 hover:!bg-gold-400">
+            شوفي الكورسات
+          </Button>
+          <Button
+            href="/dashboard"
+            variant="outline"
+            size="lg"
+            class="!border-sand-200/30 !text-sand-100 hover:!bg-white/10"
+          >
+            كورساتي
+          </Button>
+        </div>
+      </div>
+
+      <div class="rounded-[4rem_4rem_1.5rem_1.5rem] border border-sand-200/20 bg-white/8 p-8 backdrop-blur">
+        <p class="text-xs font-semibold tracking-widest text-gold-400">الأكثر طلباً</p>
+        <h3 class="mt-3 text-2xl leading-snug text-sand-50">كورس الاستعداد للرضاعة قبل الولادة</h3>
+        <p class="mt-3 text-sm leading-loose text-sand-200/70">
+          «الرضاعة الناجحة تبدأ قبل الولادة… وليس بعدها.»
+        </p>
+        <Divider class="my-6 !text-gold-400/50" />
+        <ul class="grid gap-2.5 text-sm text-sand-200/80 sm:grid-cols-2">
+          {
+            courseHighlights.map((h) => (
+              <li class="flex items-start gap-2">
+                <Rosette size={12} class="mt-1.5 shrink-0 text-gold-400" />
+                {h}
+              </li>
+            ))
+          }
+        </ul>
+        <a
+          href="/courses/breastfeeding-prep"
+          class="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-gold-400 transition hover:text-gold-200"
+        >
+          تفاصيل الكورس <span>←</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TEAM ── -->
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading
+      eyebrow="فريق الواحة"
+      title="وشوش هتشوفيها وتطمني ليها"
+      lead="سبعة متخصصين في صحة المرأة والطفل، كل واحد فيهم بيغطي جزء من الرحلة."
+      class="mb-12"
+    />
+
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      {
+        team.slice(0, 4).map((d) => (
+          <a href={`/team/${d.slug}`} class="group">
+            <div class="overflow-hidden rounded-[4rem_4rem_1rem_1rem] border border-sand-400/50 bg-sand-200">
+              <img
+                src={d.photo}
+                alt={d.name}
+                width="400"
+                height="500"
+                loading="lazy"
+                class="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+              />
+            </div>
+            <h3 class="mt-3.5 text-base leading-snug text-oasis-900">{d.name}</h3>
+            <p class="mt-1 text-xs leading-relaxed text-ink-soft">{d.role}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-10 text-center">
+      <Button href="/team" variant="outline">تعرفي على الفريق كامل</Button>
+    </div>
+  </section>
+
+  <!-- ── LOCATIONS ── -->
+  <section class="bg-sand-50 py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading eyebrow="أماكن العيادات" title="فرعين، وقريبين منك" align="center" class="mb-12" />
+      <div class="grid gap-6 md:grid-cols-2">
+        {
+          branches.map((b) => (
+            <article class="rounded-2xl border border-sand-400/50 bg-white p-8">
+              <h3 class="flex items-center gap-2 text-xl text-oasis-900">
+                <Rosette size={16} class="text-gold-500" /> {b.name}
+              </h3>
+              <p class="mt-2 text-sm font-semibold text-gold-600">{b.building}</p>
+              <ul class="mt-4 space-y-1.5 text-sm leading-loose text-ink-soft">
+                {b.lines.map((line) => (
+                  <li>{line}</li>
+                ))}
+              </ul>
+              <div class="mt-6 flex flex-wrap gap-3">
+                <Button href={waLink(`السلام عليكم، حابة أحجز موعد في ${b.name}`)} variant="whatsapp" external>
+                  <WhatsAppIcon size={16} /> احجزي هنا
+                </Button>
+                <Button
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(b.mapQuery)}`}
+                  variant="outline"
+                  external
+                >
+                  افتحي الخريطة
+                </Button>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ONLINE CONSULTATIONS ── -->
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <div class="rounded-[4rem_4rem_1.5rem_1.5rem] border border-sand-400/50 bg-white p-10 text-center lg:p-14">
+      <Rosette size={26} class="mx-auto text-gold-500" />
+      <h2 class="mt-5 text-3xl text-oasis-900">الاستشارات الطبية أونلاين</h2>
+      <p class="mx-auto mt-4 max-w-2xl leading-loose text-ink-soft">
+        متاحة لرأي طبي ثانٍ، والمتابعات الدورية، والتثقيف الطبي — بشروط واضحة نشرحها لك قبل الحجز.
+      </p>
+      <div class="mt-8">
+        <Button href="/online-consultations" size="lg">اعرفي التفاصيل</Button>
+      </div>
+    </div>
+  </section>
+</Marketing>

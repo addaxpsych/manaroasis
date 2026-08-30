@@ -1,0 +1,19 @@
+---
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { waLink } from '../../config/site';
+
+interface Props {
+  /** Context-specific message so the clinic sees the intent before replying. */
+  message?: string;
+}
+const { message = 'السلام عليكم، حابة أحجز موعد في الواحة' } = Astro.props;
+---
+<a
+  href={waLink(message)}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="fixed bottom-5 end-5 z-50 inline-flex items-center gap-2 rounded-full bg-[#1f7a4d] px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-oasis-900/25 transition hover:bg-[#186b42] hover:shadow-xl"
+>
+  <WhatsAppIcon size={20} />
+  <span class="hidden sm:inline">احجزي موعد</span>
+</a>

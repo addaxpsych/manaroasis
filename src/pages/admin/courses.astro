@@ -1,0 +1,204 @@
+---
+import Dashboard from '../../layouts/Dashboard.astro';
+import { requireAdmin } from '../../lib/guards';
+import { listAllCourses } from '../../lib/courses';
+
+const auth = requireAdmin(Astro);
+if ('redirect' in auth) return auth.redirect;
+const { profile } = auth;
+
+const supabase = Astro.locals.supabase;
+let saved = '';
+let error = '';
+
+/* Price and publish state are edited here because the client had not set
+   prices when the site was built — courses ship unpublished at 0 EGP and are
+   turned on from this screen. */
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const courseId = String(form.get('courseId') ?? '');
+  const action = String(form.get('action') ?? '');
+
+  if (action === 'toggle') {
+    const publish = String(form.get('publish')) === 'true';
+    const { error: updateError } = await supabase
+      .from('courses')
+      .update({ is_published: publish })
+      .eq('id', courseId);
+    if (updateError) error = 'مانفعش نحدث حالة النشر.';
+    else saved = publish ? 'تم نشر الكورس.' : 'تم إخفاء الكورس.';
+  }
+
+  if (action === 'price') {
+    const price = Number(form.get('price') ?? 0);
+    const discountRaw = String(form.get('discount') ?? '').trim();
+    const discount = discountRaw ? Number(discountRaw) : null;
+
+    if (!Number.isFinite(price) || price < 0) {
+      error = 'السعر غير صحيح.';
+    } else if (discount !== null && (!Number.isFinite(discount) || discount < 0)) {
+      error = 'سعر الخصم غير صحيح.';
+    } else if (discount !== null && discount >= price) {
+      error = 'سعر الخصم لازم يكون أقل من السعر الأساسي.';
+    } else {
+      const { error: updateError } = await supabase
+        .from('courses')
+        .update({ price_egp: price, discount_price_egp: discount })
+        .eq('id', courseId);
+      if (updateError) error = 'مانفعش نحفظ السعر.';
+      else saved = 'تم حفظ السعر.';
+    }
+  }
+}
+
+const courses = await listAllCourses(supabase);
+
+/* Lesson counts, so the admin can see at a glance which courses still have no
+   content and therefore should not be published. */
+const counts = new Map<string, number>();
+if (courses.length > 0) {
+  const { data: modules } = await supabase.from('modules').select('id, course_id');
+  const moduleToCourse = new Map((modules ?? []).map((m) => [m.id, m.course_id]));
+  const { data: lessons } = await supabase.from('lessons').select('id, module_id');
+  for (const l of lessons ?? []) {
+    const courseId = moduleToCourse.get(l.module_id);
+    if (!courseId) continue;
+    counts.set(courseId, (counts.get(courseId) ?? 0) + 1);
+  }
+}
+
+const input =
+  'w-full rounded-lg border border-sand-400/60 bg-white px-3 py-2 text-sm ' +
+  'focus:border-oasis-700 focus:outline-none focus:ring-2 focus:ring-oasis-700/15';
+---
+
+<Dashboard title="الكورسات" profile={profile} admin>
+  <header class="mb-6">
+    <h1 class="text-3xl text-oasis-900">الكورسات</h1>
+    <p class="mt-2 text-sm text-ink-soft">
+      حددي السعر وانشري الكورس. الدروس والفيديوهات بتتضاف من قاعدة البيانات.
+    </p>
+  </header>
+
+  {saved && <p class="mb-5 rounded-xl border border-oasis-700/40 bg-oasis-700/10 px-4 py-3 text-sm text-oasis-700">{saved}</p>}
+  {error && <p role="alert" class="mb-5 rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>}
+
+  <div class="space-y-5">
+    {
+      courses.map((course) => {
+        const lessonCount = counts.get(course.id) ?? 0;
+        const blockedReason =
+          lessonCount === 0
+            ? 'الكورس مالوش دروس لسه'
+            : course.price_egp === 0
+              ? 'السعر لسه صفر'
+              : null;
+
+        return (
+          <article class="overflow-hidden rounded-2xl border border-sand-400/50 bg-white">
+            <div class="flex flex-wrap items-center gap-5 p-6">
+              {course.cover_image && (
+                <img
+                  src={course.cover_image}
+                  alt={course.title_ar}
+                  width="120"
+                  height="120"
+                  class="h-20 w-20 shrink-0 rounded-xl border border-sand-400/50 object-cover"
+                />
+              )}
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2.5">
+                  <h2 class="text-lg text-oasis-900">{course.title_ar}</h2>
+                  <span
+                    class:list={[
+                      'rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                      course.is_published
+                        ? 'bg-oasis-700/15 text-oasis-700'
+                        : 'bg-sand-200 text-ink-soft',
+                    ]}
+                  >
+                    {course.is_published ? 'منشور' : 'مسودة'}
+                  </span>
+                  <span class="rounded-full border border-sand-400/60 px-2.5 py-0.5 text-xs text-ink-soft">
+                    {course.theme === 'botanical' ? 'بوتانيكال' : 'الواحة'}
+                  </span>
+                </div>
+                <p class="num mt-1.5 text-xs text-ink-faint">
+                  {lessonCount} درس · /courses/{course.slug}
+                </p>
+              </div>
+
+              <form method="POST" class="shrink-0">
+                <input type="hidden" name="courseId" value={course.id} />
+                <input type="hidden" name="action" value="toggle" />
+                <input type="hidden" name="publish" value={String(!course.is_published)} />
+                <button
+                  type="submit"
+                  disabled={!course.is_published && blockedReason !== null}
+                  title={!course.is_published && blockedReason ? blockedReason : undefined}
+                  class:list={[
+                    'rounded-xl px-5 py-2.5 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-45',
+                    course.is_published
+                      ? 'border border-sand-400/60 text-ink-soft hover:bg-sand-100'
+                      : 'bg-oasis-900 text-sand-50 hover:bg-oasis-700',
+                  ]}
+                >
+                  {course.is_published ? 'إخفاء' : 'نشر'}
+                </button>
+              </form>
+            </div>
+
+            <div class="border-t border-sand-400/50 bg-sand-50 p-6">
+              {blockedReason && !course.is_published && (
+                <p class="mb-4 text-xs text-gold-600">
+                  مينفعش تنشري الكورس دلوقتي: {blockedReason}.
+                </p>
+              )}
+
+              <form method="POST" class="flex flex-wrap items-end gap-3">
+                <input type="hidden" name="courseId" value={course.id} />
+                <input type="hidden" name="action" value="price" />
+
+                <div class="w-36">
+                  <label class="mb-1 block text-xs font-semibold text-oasis-900" for={`price-${course.id}`}>
+                    السعر (ج.م)
+                  </label>
+                  <input
+                    id={`price-${course.id}`} name="price" type="number" min="0" dir="ltr"
+                    value={course.price_egp} class={`${input} text-start`}
+                  />
+                </div>
+
+                <div class="w-36">
+                  <label class="mb-1 block text-xs font-semibold text-oasis-900" for={`discount-${course.id}`}>
+                    سعر الخصم
+                  </label>
+                  <input
+                    id={`discount-${course.id}`} name="discount" type="number" min="0" dir="ltr"
+                    value={course.discount_price_egp ?? ''} placeholder="اختياري"
+                    class={`${input} text-start`}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  class="rounded-xl border border-oasis-700 px-5 py-2.5 text-sm font-bold text-oasis-700 transition hover:bg-oasis-700/8"
+                >
+                  حفظ السعر
+                </button>
+              </form>
+            </div>
+          </article>
+        );
+      })
+    }
+
+    {
+      courses.length === 0 && (
+        <p class="rounded-2xl border border-sand-400/50 bg-white p-10 text-center text-sm text-ink-soft">
+          مفيش كورسات في قاعدة البيانات. شغّلي ملف supabase/APPLY_ALL.sql الأول.
+        </p>
+      )
+    }
+  </div>
+</Dashboard>

@@ -1,0 +1,1731 @@
+Content is user-generated and unverified.
+
+
+Learn about artifacts
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrition for the Egyptian Family Table</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sage: #7a9e7e;
+    --sage-light: #a8c5a0;
+    --sage-pale: #ddeadb;
+    --brown: #7b5c3f;
+    --brown-light: #a07850;
+    --brown-pale: #e8ddd0;
+    --beige: #f5efe6;
+    --beige-mid: #e8ddd0;
+    --blue: #6a8fa8;
+    --blue-light: #c4d8e3;
+    --blue-pale: #eaf2f7;
+    --text-dark: #2e2118;
+    --text-mid: #5a4232;
+    --text-soft: #8a7060;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--beige);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #3b2a1a 0%, #5a4232 40%, #7a6248 70%, #9a8060 100%);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 80%, rgba(122,158,126,0.25) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(106,143,168,0.2) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15 30 Q30 5 45 30 Q30 55 15 30Z' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: cover, cover, 60px 60px;
+  }
+
+  .hero-text {
+    padding: 80px 60px 80px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(122,158,126,0.25);
+    border: 1px solid rgba(122,158,126,0.5);
+    color: var(--sage-light);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 30px;
+    margin-bottom: 32px;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero-badge::before { content: '🌿'; font-size: 14px; }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 300;
+    color: var(--beige);
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--sage-light);
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(245,239,230,0.65);
+    margin-bottom: 28px;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(245,239,230,0.75);
+    line-height: 1.8;
+    max-width: 460px;
+    margin-bottom: 44px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--sage);
+    color: white;
+    border: none;
+    padding: 15px 32px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--sage-light); transform: translateY(-2px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--beige);
+    border: 1px solid rgba(245,239,230,0.35);
+    padding: 15px 32px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover { border-color: rgba(245,239,230,0.7); transform: translateY(-2px); }
+
+  .hero-visual {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .hero-plate {
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(122,158,126,0.3), rgba(123,92,63,0.4));
+    border: 2px solid rgba(245,239,230,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-18px); }
+  }
+
+  .hero-plate-inner {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(245,239,230,0.07);
+    border: 1px solid rgba(245,239,230,0.12);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 30px;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .food-icon {
+    font-size: 40px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    animation: pop 0.5s ease backwards;
+  }
+
+  .food-icon:nth-child(1) { animation-delay: 0.2s; }
+  .food-icon:nth-child(2) { animation-delay: 0.4s; }
+  .food-icon:nth-child(3) { animation-delay: 0.6s; }
+  .food-icon:nth-child(4) { animation-delay: 0.8s; }
+
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .hero-orbit {
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    border-radius: 50%;
+    border: 1px dashed rgba(122,158,126,0.3);
+    animation: spin 30s linear infinite;
+  }
+
+  .orbit-dot {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sage-light);
+    box-shadow: 0 0 12px rgba(122,158,126,0.6);
+  }
+
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .hero-stats {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    z-index: 2;
+  }
+
+  .stat {
+    text-align: center;
+    color: white;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--sage-light);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(245,239,230,0.55);
+    margin-top: 4px;
+    display: block;
+  }
+
+  .stat-divider {
+    width: 1px;
+    background: rgba(245,239,230,0.15);
+    align-self: stretch;
+  }
+
+  /* ── SECTION STYLES ── */
+  section { padding: 90px 80px; }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 14px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--sage);
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 3.5vw, 52px);
+    font-weight: 300;
+    color: var(--text-dark);
+    line-height: 1.15;
+  }
+
+  h2 em { font-style: italic; color: var(--brown); }
+
+  /* ── FOR WHOM ── */
+  .for-whom {
+    background: white;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    padding: 90px 80px;
+  }
+
+  .for-whom-text p {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.9;
+    margin-top: 24px;
+  }
+
+  .profiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .profile-card {
+    background: var(--beige);
+    border-radius: 12px;
+    padding: 28px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--beige-mid);
+  }
+
+  .profile-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.07); }
+
+  .profile-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .profile-card.sage::after { background: var(--sage); }
+  .profile-card.brown::after { background: var(--brown); }
+  .profile-card.blue::after { background: var(--blue); }
+  .profile-card.brown-light::after { background: var(--brown-light); }
+
+  .profile-icon { font-size: 32px; margin-bottom: 12px; }
+  .profile-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+  .profile-desc { font-size: 12.5px; font-weight: 300; color: var(--text-soft); line-height: 1.7; }
+
+  /* ── MODULES ── */
+  .modules {
+    background: var(--beige);
+    padding: 90px 80px;
+  }
+
+  .modules-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: end;
+    margin-bottom: 60px;
+  }
+
+  .modules-header p {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.9;
+  }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .module-card {
+    background: white;
+    border-radius: 14px;
+    padding: 36px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s ease;
+    border: 1px solid var(--beige-mid);
+  }
+
+  .module-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+  }
+
+  .module-card.featured {
+    grid-column: span 1;
+    background: linear-gradient(145deg, #5a4232 0%, #7b5c3f 100%);
+    color: white;
+    border: none;
+  }
+
+  .module-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--beige-mid);
+    line-height: 1;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .module-card.featured .module-num { color: rgba(255,255,255,0.12); }
+
+  .module-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .module-card:not(.featured) .module-tag {
+    background: var(--sage-pale);
+    color: var(--sage);
+  }
+
+  .module-card.featured .module-tag {
+    background: rgba(122,158,126,0.3);
+    color: var(--sage-light);
+  }
+
+  .module-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .module-card.featured h3 { color: var(--beige); }
+
+  .module-card p {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-soft);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .module-card.featured p { color: rgba(245,239,230,0.7); }
+
+  .module-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .topic-pill {
+    font-size: 11px;
+    font-weight: 400;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--beige);
+    color: var(--text-mid);
+    border: 1px solid var(--beige-mid);
+  }
+
+  .module-card.featured .topic-pill {
+    background: rgba(245,239,230,0.1);
+    color: rgba(245,239,230,0.75);
+    border-color: rgba(245,239,230,0.2);
+  }
+
+  .module-week {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-soft);
+    letter-spacing: 0.5px;
+  }
+
+  .module-card.featured .module-week { color: rgba(245,239,230,0.5); }
+
+  /* ── FAMILY SIZE SECTION ── */
+  .family-sizes {
+    background: white;
+    padding: 90px 80px;
+  }
+
+  .family-sizes-header {
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto 60px;
+  }
+
+  .family-sizes-header p {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.9;
+    margin-top: 20px;
+  }
+
+  .size-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .size-card {
+    background: var(--beige);
+    border-radius: 16px;
+    padding: 36px 24px;
+    text-align: center;
+    border: 1px solid var(--beige-mid);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .size-card:hover { transform: translateY(-5px); box-shadow: 0 18px 45px rgba(0,0,0,0.06); }
+
+  .size-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+  }
+
+  .size-card:nth-child(1)::before { background: var(--sage); }
+  .size-card:nth-child(2)::before { background: var(--brown-light); }
+  .size-card:nth-child(3)::before { background: var(--blue); }
+  .size-card:nth-child(4)::before { background: var(--brown); }
+
+  .size-icon { font-size: 44px; margin-bottom: 14px; }
+
+  .size-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+
+  .size-people {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--sage);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .size-desc {
+    font-size: 12.5px;
+    font-weight: 300;
+    color: var(--text-soft);
+    line-height: 1.75;
+  }
+
+  /* ── WHAT YOU LEARN ── */
+  .learning {
+    background: linear-gradient(160deg, var(--sage) 0%, #5a8060 100%);
+    padding: 90px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .learning::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='40' cy='40' r='30' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E") repeat;
+    background-size: 80px 80px;
+  }
+
+  .learning-inner {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .learning-header h2 { color: white; }
+  .learning-header em { color: rgba(245,239,230,0.75); }
+  .learning-header p {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.9;
+    margin-top: 20px;
+  }
+
+  .learning-header .section-label { color: rgba(255,255,255,0.7); }
+  .learning-header .section-label::before { background: rgba(255,255,255,0.5); }
+
+  .outcomes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .outcome-item {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 24px 22px;
+    transition: all 0.3s ease;
+  }
+
+  .outcome-item:hover { background: rgba(255,255,255,0.18); transform: translateY(-3px); }
+
+  .outcome-icon { font-size: 28px; margin-bottom: 10px; }
+  .outcome-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 6px;
+  }
+  .outcome-desc { font-size: 12.5px; font-weight: 300; color: rgba(255,255,255,0.7); line-height: 1.75; }
+
+  /* ── PRACTICAL TOOLS ── */
+  .tools {
+    background: var(--beige);
+    padding: 90px 80px;
+  }
+
+  .tools-header { margin-bottom: 56px; }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  .tool-card {
+    background: white;
+    border-radius: 14px;
+    padding: 32px;
+    border: 1px solid var(--beige-mid);
+    transition: all 0.3s ease;
+  }
+
+  .tool-card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.07); transform: translateY(-3px); }
+
+  .tool-card.large {
+    background: linear-gradient(145deg, var(--blue-pale), white);
+    border-color: var(--blue-light);
+  }
+
+  .tool-icon { font-size: 36px; margin-bottom: 16px; }
+  .tool-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+  }
+  .tool-card p {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-soft);
+    line-height: 1.8;
+  }
+
+  .tool-list {
+    list-style: none;
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tool-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-mid);
+  }
+
+  .tool-list li::before {
+    content: '✓';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--sage-pale);
+    color: var(--sage);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── FORMAT ── */
+  .format {
+    background: white;
+    padding: 90px 80px;
+  }
+
+  .format-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .format-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 32px;
+  }
+
+  .format-item {
+    display: flex;
+    gap: 22px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--beige-mid);
+    align-items: flex-start;
+    transition: all 0.3s ease;
+  }
+
+  .format-item:hover { padding-left: 6px; }
+  .format-item:last-child { border-bottom: none; }
+
+  .format-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .format-circle.sage { background: var(--sage-pale); }
+  .format-circle.brown { background: var(--brown-pale); }
+  .format-circle.blue { background: var(--blue-pale); }
+
+  .format-content h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+  }
+
+  .format-content p { font-size: 13px; font-weight: 300; color: var(--text-soft); line-height: 1.7; }
+
+  /* Timeline / weeks visual */
+  .format-timeline {
+    background: var(--beige);
+    border-radius: 20px;
+    padding: 40px;
+  }
+
+  .timeline-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .week-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .week-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .week-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .week-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-soft);
+    letter-spacing: 0.5px;
+    min-width: 52px;
+  }
+
+  .week-bar {
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 400;
+    color: white;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── CERTIFICATE ── */
+  .certificate {
+    background: linear-gradient(135deg, #3b2a1a 0%, #5a4232 50%, #3b2a1a 100%);
+    padding: 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .certificate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 50%, rgba(122,158,126,0.2) 0%, transparent 40%),
+      radial-gradient(circle at 85% 50%, rgba(106,143,168,0.15) 0%, transparent 40%);
+  }
+
+  .cert-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .cert-badge {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    margin: 0 auto 28px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .cert-inner h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--beige);
+    margin-bottom: 16px;
+  }
+
+  .cert-inner em { color: var(--sage-light); }
+
+  .cert-inner p {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(245,239,230,0.7);
+    line-height: 1.9;
+    margin-bottom: 40px;
+  }
+
+  .cert-credentials {
+    display: flex;
+    justify-content: center;
+    gap: 36px;
+    flex-wrap: wrap;
+  }
+
+  .cred-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: rgba(245,239,230,0.65);
+    font-weight: 300;
+  }
+
+  .cred-icon { font-size: 18px; }
+
+  /* ── ENROLLMENT ── */
+  .enrollment {
+    background: var(--beige);
+    padding: 90px 80px;
+  }
+
+  .enroll-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 50px;
+  }
+
+  .enroll-card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--beige-mid);
+    transition: all 0.3s ease;
+  }
+
+  .enroll-card:hover { box-shadow: 0 20px 50px rgba(0,0,0,0.08); transform: translateY(-4px); }
+
+  .enroll-card-header {
+    padding: 32px 32px 24px;
+    border-bottom: 1px solid var(--beige-mid);
+  }
+
+  .enroll-card-header.sage { background: linear-gradient(135deg, var(--sage-pale), white); }
+  .enroll-card-header.brown { background: linear-gradient(135deg, var(--brown-pale), white); }
+
+  .plan-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+
+  .plan-desc { font-size: 13px; font-weight: 300; color: var(--text-soft); }
+
+  .plan-price {
+    margin-top: 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .plan-price .amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--text-dark);
+  }
+
+  .plan-price .currency { font-size: 18px; color: var(--text-soft); }
+  .plan-price .period { font-size: 13px; color: var(--text-soft); font-weight: 300; }
+
+  .enroll-card-body { padding: 28px 32px 32px; }
+
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--text-mid);
+  }
+
+  .feat-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .feat-check.sage { background: var(--sage-pale); color: var(--sage); }
+  .feat-check.brown { background: var(--brown-pale); color: var(--brown); }
+
+  .enroll-btn {
+    width: 100%;
+    padding: 16px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .enroll-btn.sage { background: var(--sage); color: white; }
+  .enroll-btn.sage:hover { background: #6a8e6e; }
+  .enroll-btn.brown { background: var(--brown); color: white; }
+  .enroll-btn.brown:hover { background: #6a4d35; }
+
+  /* ── INSTRUCTOR ── */
+  .instructor {
+    background: white;
+    padding: 90px 80px;
+  }
+
+  .instructor-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 70px;
+    align-items: center;
+  }
+
+  .instructor-card {
+    background: var(--beige);
+    border-radius: 20px;
+    padding: 44px 36px;
+    text-align: center;
+    border: 1px solid var(--beige-mid);
+  }
+
+  .instructor-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--sage-light), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    margin: 0 auto 20px;
+    border: 4px solid white;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  }
+
+  .instructor-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+  }
+
+  .instructor-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--sage);
+    margin-bottom: 18px;
+    letter-spacing: 0.3px;
+  }
+
+  .instructor-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .itag {
+    font-size: 11px;
+    font-weight: 400;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: white;
+    color: var(--text-mid);
+    border: 1px solid var(--beige-mid);
+  }
+
+  .instructor-bio h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  .instructor-bio p {
+    font-size: 14.5px;
+    font-weight: 300;
+    color: var(--text-mid);
+    line-height: 1.9;
+    margin-bottom: 14px;
+  }
+
+  .credential-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .credential-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 300;
+    color: var(--text-mid);
+  }
+
+  .credential-list li::before { content: '🌿'; font-size: 14px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--text-dark);
+    color: var(--beige);
+    padding: 60px 80px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 60px;
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--beige);
+    margin-bottom: 12px;
+  }
+
+  .footer-brand em { font-style: italic; color: var(--sage-light); }
+  .footer-tagline { font-size: 13px; font-weight: 300; color: rgba(245,239,230,0.5); line-height: 1.75; }
+
+  .footer-col h5 {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sage-light);
+    margin-bottom: 16px;
+  }
+
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-links li a {
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 300;
+    color: rgba(245,239,230,0.6);
+    transition: color 0.2s;
+  }
+  .footer-links li a:hover { color: var(--sage-light); }
+
+  .footer-bottom {
+    background: #1e1208;
+    padding: 20px 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p { font-size: 12px; color: rgba(245,239,230,0.35); font-weight: 300; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    section, .for-whom, .modules, .family-sizes, .learning, .tools, .format, .certificate, .enrollment, .instructor, footer { padding: 60px 28px; }
+    .hero { grid-template-columns: 1fr; min-height: auto; padding: 70px 28px 120px; }
+    .hero-visual { display: none; }
+    .hero-stats { position: relative; bottom: auto; left: auto; transform: none; margin-top: 40px; justify-content: center; flex-wrap: wrap; gap: 24px; }
+    .for-whom, .format-inner, .instructor-inner, .learning-inner { grid-template-columns: 1fr; gap: 40px; }
+    .profiles, .outcomes { grid-template-columns: 1fr; }
+    .module-grid, .size-cards, .tools-grid, .enroll-grid, .modules-header, footer { grid-template-columns: 1fr; }
+    .module-card.featured { grid-column: span 1; }
+    .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-badge">Doctor-Designed Nutrition Program</div>
+    <h1>Feed Your Family<br><em>With Wisdom.</em></h1>
+    <p class="hero-sub">A complete nutrition course for the Egyptian mother</p>
+    <p class="hero-desc">Whether you're managing a household of two or a large extended family, this course gives you the knowledge, meal-planning tools, and confidence to nourish every stage of life — simply, affordably, and deliciously.</p>
+    <div class="hero-cta">
+      <a href="#enrollment" class="btn-primary">Enroll Now</a>
+      <a href="#modules" class="btn-secondary">View Curriculum →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">8</span>
+        <span class="stat-label">Modules</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">40+</span>
+        <span class="stat-label">Lessons</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">4</span>
+        <span class="stat-label">Family Sizes</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Egypt-Specific</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-orbit"><div class="orbit-dot"></div></div>
+    <div class="hero-plate">
+      <div class="hero-plate-inner">
+        <span class="food-icon">🥗</span>
+        <span class="food-icon">🥩</span>
+        <span class="food-icon">🥦</span>
+        <span class="food-icon">🫘</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<div class="for-whom">
+  <div class="for-whom-text">
+    <div class="section-label">Who This Is For</div>
+    <h2>Built for <em>Every Egyptian Mother</em></h2>
+    <p>This course was designed with your real life in mind — not a laboratory. Whether you have an hour to cook or twenty minutes, whether you're feeding toddlers or teenagers, whether you shop at a supermarket or the local souq, this program meets you where you are.</p>
+    <p>No prior nutrition knowledge needed. Everything is explained in clear, practical Arabic-context examples using foods you already know and love.</p>
+  </div>
+  <div class="profiles">
+    <div class="profile-card sage">
+      <div class="profile-icon">👩‍💼</div>
+      <div class="profile-title">The Working Mother</div>
+      <div class="profile-desc">Meal prep strategies, 30-minute dinners, and batch cooking systems that work around a full-time schedule.</div>
+    </div>
+    <div class="profile-card brown">
+      <div class="profile-icon">🏠</div>
+      <div class="profile-title">The Housewife</div>
+      <div class="profile-desc">Deep dives into seasonal cooking, budget optimization, and whole-family nutrition across all ages.</div>
+    </div>
+    <div class="profile-card blue">
+      <div class="profile-icon">👶</div>
+      <div class="profile-title">The New Mother</div>
+      <div class="profile-desc">Postpartum nutrition, infant feeding transitions, and building healthy habits from day one.</div>
+    </div>
+    <div class="profile-card brown-light">
+      <div class="profile-icon">👩‍👧‍👦</div>
+      <div class="profile-title">The Single Parent</div>
+      <div class="profile-desc">Maximum nutrition on a budget, simplified planning, and quick wins for every meal of the day.</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODULES -->
+<section class="modules" id="modules">
+  <div class="modules-header">
+    <div>
+      <div class="section-label">Course Curriculum</div>
+      <h2>8 Modules, <em>Real-Life Results</em></h2>
+    </div>
+    <p>Each module combines science-backed nutrition knowledge with practical Egyptian kitchen application. Lessons are bite-sized (15–25 min) so they fit into nap times, lunch breaks, or evenings.</p>
+  </div>
+
+  <div class="module-grid">
+
+    <div class="module-card">
+      <span class="module-week">Week 1</span>
+      <span class="module-num">01</span>
+      <span class="module-tag">Foundation</span>
+      <h3>Nutrition Basics for the Family Table</h3>
+      <p>Macronutrients, micronutrients, and how the body uses food — explained through everyday Egyptian dishes.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Carbs, Protein & Fat</span>
+        <span class="topic-pill">Vitamins & Minerals</span>
+        <span class="topic-pill">Portion Sizing</span>
+      </div>
+    </div>
+
+    <div class="module-card featured">
+      <span class="module-week">Week 2</span>
+      <span class="module-num">02</span>
+      <span class="module-tag">⭐ Core Module</span>
+      <h3>Egyptian Foods & Their Hidden Power</h3>
+      <p>Discover the nutritional gold in your everyday pantry: ful medames, molokhia, lentils, and more.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Local Superfoods</span>
+        <span class="topic-pill">Seasonal Produce</span>
+        <span class="topic-pill">Traditional Dishes</span>
+        <span class="topic-pill">Souq Shopping Guide</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <span class="module-week">Week 3</span>
+      <span class="module-num">03</span>
+      <span class="module-tag">Planning</span>
+      <h3>Meal Planning by Family Size</h3>
+      <p>Step-by-step planning frameworks tailored for small, medium, and large Egyptian households.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Weekly Meal Plans</span>
+        <span class="topic-pill">Shopping Lists</span>
+        <span class="topic-pill">Leftovers Strategy</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <span class="module-week">Week 4</span>
+      <span class="module-num">04</span>
+      <span class="module-tag">Life Stages</span>
+      <h3>Feeding Every Age at the Same Table</h3>
+      <p>How to cook one meal that meets the needs of toddlers, school children, adults, and elderly family members.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Children's Nutrition</span>
+        <span class="topic-pill">Teen Needs</span>
+        <span class="topic-pill">Elderly Care</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <span class="module-week">Week 5</span>
+      <span class="module-num">05</span>
+      <span class="module-tag">Budget</span>
+      <h3>Maximum Nutrition, Minimum Cost</h3>
+      <p>Smart shopping in Egyptian markets, seasonal substitutions, and making protein affordable for every budget.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Budget Meal Plans</span>
+        <span class="topic-pill">Protein on a Budget</span>
+        <span class="topic-pill">Waste Reduction</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <span class="module-week">Week 6</span>
+      <span class="module-num">06</span>
+      <span class="module-tag">Special Needs</span>
+      <h3>Managing Conditions Through Food</h3>
+      <p>Nutrition guidance for families dealing with diabetes, anemia, obesity, or hypertension — common in Egyptian households.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Diabetes-Friendly</span>
+        <span class="topic-pill">Iron-Rich Meals</span>
+        <span class="topic-pill">Heart Health</span>
+      </div>
+    </div>
+
+    <div class="module-card">
+      <span class="module-week">Week 7</span>
+      <span class="module-num">07</span>
+      <span class="module-tag">Time-Saving</span>
+      <h3>Quick & Nourishing: The Busy Mother's Kitchen</h3>
+      <p>Batch cooking, freezer meals, and 20-minute nutritious dinners for working mothers and full schedules.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Batch Cooking</span>
+        <span class="topic-pill">Freezer Meals</span>
+        <span class="topic-pill">Quick Recipes</span>
+      </div>
+    </div>
+
+    <div class="module-card" style="grid-column: span 2;">
+      <span class="module-week">Week 8</span>
+      <span class="module-num">08</span>
+      <span class="module-tag">Celebration & Seasons</span>
+      <h3>Healthy Feasting: Ramadan, Eid & Egyptian Celebrations</h3>
+      <p>How to enjoy Egypt's rich food traditions — iftar, sohour, holiday spreads — while keeping the family nourished and energized. A love letter to Egyptian food culture, reimagined for health.</p>
+      <div class="module-topics">
+        <span class="topic-pill">Ramadan Nutrition</span>
+        <span class="topic-pill">Sohour Planning</span>
+        <span class="topic-pill">Eid Meals</span>
+        <span class="topic-pill">Festive Substitutions</span>
+        <span class="topic-pill">Fasting & Children</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FAMILY SIZES -->
+<section class="family-sizes">
+  <div class="family-sizes-header">
+    <div class="section-label">Tailored Planning</div>
+    <h2>Adapted for <em>Every Household</em></h2>
+    <p>One of the course's unique features: every meal plan and shopping guide is sized for your specific family — from a couple starting out to a multigenerational household.</p>
+  </div>
+
+  <div class="size-cards">
+    <div class="size-card">
+      <div class="size-icon">👫</div>
+      <div class="size-label">Small Family</div>
+      <div class="size-people">2 – 3 Members</div>
+      <div class="size-desc">Portion control, variety without waste, and building strong nutrition foundations for couples and young families.</div>
+    </div>
+    <div class="size-card">
+      <div class="size-icon">👨‍👩‍👧‍👦</div>
+      <div class="size-label">Mid-Sized Family</div>
+      <div class="size-people">4 – 5 Members</div>
+      <div class="size-desc">Balancing different ages and preferences at one table, practical weekly meal plans for the typical Egyptian family.</div>
+    </div>
+    <div class="size-card">
+      <div class="size-icon">👨‍👩‍👧‍👦👴👵</div>
+      <div class="size-label">Large Family</div>
+      <div class="size-people">6 – 8 Members</div>
+      <div class="size-desc">Cooking in larger quantities while preserving nutrition, managing diverse dietary needs including the elderly.</div>
+    </div>
+    <div class="size-card">
+      <div class="size-icon">🏡</div>
+      <div class="size-label">Extended Family</div>
+      <div class="size-people">9+ Members</div>
+      <div class="size-desc">Multigenerational household planning, managing shared kitchens, and feeding large families on a structured budget.</div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING OUTCOMES -->
+<section class="learning">
+  <div class="learning-inner">
+    <div class="learning-header">
+      <div class="section-label">What You'll Gain</div>
+      <h2>Leave This Course <em>Transformed</em></h2>
+      <p>More than recipes — you'll leave with a complete nutritional mindset, the confidence to make smart food decisions, and practical tools that work in real Egyptian kitchens.</p>
+    </div>
+    <div class="outcomes">
+      <div class="outcome-item">
+        <div class="outcome-icon">🧠</div>
+        <div class="outcome-title">Nutritional Literacy</div>
+        <div class="outcome-desc">Read food labels, understand your family's actual needs, and stop guessing.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon">📋</div>
+        <div class="outcome-title">Weekly Meal Planning</div>
+        <div class="outcome-desc">Build efficient, balanced weekly plans sized for your household in under 30 minutes.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon">💰</div>
+        <div class="outcome-title">Budget Mastery</div>
+        <div class="outcome-desc">Feed your family well without overspending — using local markets and seasonal produce.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon">🥘</div>
+        <div class="outcome-title">Cooking Confidence</div>
+        <div class="outcome-desc">Upgrade your existing recipes to be more nutritious without losing flavor or tradition.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon">👶</div>
+        <div class="outcome-title">Age-Specific Knowledge</div>
+        <div class="outcome-desc">Know exactly what each family member needs at every stage of life.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-icon">🌙</div>
+        <div class="outcome-title">Seasonal & Cultural Eating</div>
+        <div class="outcome-desc">Navigate Ramadan, celebrations, and seasonal shifts with health and joy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRACTICAL TOOLS -->
+<section class="tools">
+  <div class="tools-header">
+    <div class="section-label">Included Resources</div>
+    <h2>Everything You Need, <em>Ready to Use</em></h2>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-card large">
+      <div class="tool-icon">📱</div>
+      <h3>Digital Meal Planning Workbook</h3>
+      <p>A complete, downloadable workbook with weekly planners, shopping list templates, and pantry guides — available in Arabic and English.</p>
+      <ul class="tool-list">
+        <li>4 versions (for each family size)</li>
+        <li>Weekly & monthly planning sheets</li>
+        <li>Souq & supermarket shopping guides</li>
+        <li>Nutritional reference cards</li>
+      </ul>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🎥</div>
+      <h3>Video Lessons</h3>
+      <p>HD video content with real kitchen demonstrations, clear explanations, and lifetime access.</p>
+      <ul class="tool-list">
+        <li>40+ video lessons</li>
+        <li>Arabic narration</li>
+        <li>Closed captions</li>
+        <li>Downloadable slides</li>
+      </ul>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🥗</div>
+      <h3>60+ Recipe Library</h3>
+      <p>Nutritionist-approved recipes using Egyptian ingredients, each with full nutritional information and scaling options.</p>
+      <ul class="tool-list">
+        <li>Scaled by family size</li>
+        <li>Budget notes per recipe</li>
+        <li>Prep time labels</li>
+        <li>Condition-friendly tags</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FORMAT -->
+<section class="format">
+  <div class="format-inner">
+    <div>
+      <div class="section-label">How It Works</div>
+      <h2>Learn at <em>Your Own Pace</em></h2>
+      <div class="format-items">
+        <div class="format-item">
+          <div class="format-circle sage">📹</div>
+          <div class="format-content">
+            <h4>Self-Paced Video Lessons</h4>
+            <p>Watch anytime, anywhere — during a child's nap, on commute, or after the family sleeps.</p>
+          </div>
+        </div>
+        <div class="format-item">
+          <div class="format-circle brown">📝</div>
+          <div class="format-content">
+            <h4>Weekly Practice Challenges</h4>
+            <p>Small, achievable challenges each week to apply what you've learned in your own kitchen.</p>
+          </div>
+        </div>
+        <div class="format-item">
+          <div class="format-circle blue">👥</div>
+          <div class="format-content">
+            <h4>Private Community Group</h4>
+            <p>Join a supportive group of Egyptian mothers to share meals, questions, and encouragement.</p>
+          </div>
+        </div>
+        <div class="format-item">
+          <div class="format-circle sage">🎓</div>
+          <div class="format-content">
+            <h4>Live Q&A Sessions (Monthly)</h4>
+            <p>Monthly live sessions with the course instructor to answer your specific questions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="format-timeline">
+      <div class="timeline-title">8-Week Journey</div>
+      <div class="week-list">
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--sage)"></div>
+          <span class="week-label">Week 1</span>
+          <div class="week-bar" style="background: var(--sage); width: 55%">Nutrition Foundations</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--brown)"></div>
+          <span class="week-label">Week 2</span>
+          <div class="week-bar" style="background: var(--brown); width: 65%">Egyptian Superfoods</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--blue)"></div>
+          <span class="week-label">Week 3</span>
+          <div class="week-bar" style="background: var(--blue); width: 70%">Meal Planning</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--sage)"></div>
+          <span class="week-label">Week 4</span>
+          <div class="week-bar" style="background: var(--sage); width: 60%">Feeding All Ages</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--brown-light)"></div>
+          <span class="week-label">Week 5</span>
+          <div class="week-bar" style="background: var(--brown-light); width: 75%">Budget Nutrition</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--blue)"></div>
+          <span class="week-label">Week 6</span>
+          <div class="week-bar" style="background: var(--blue); width: 62%">Health Conditions</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--sage)"></div>
+          <span class="week-label">Week 7</span>
+          <div class="week-bar" style="background: var(--sage); width: 68%">Quick Kitchen</div>
+        </div>
+        <div class="week-row">
+          <div class="week-dot" style="background: var(--brown)"></div>
+          <span class="week-label">Week 8</span>
+          <div class="week-bar" style="background: var(--brown); width: 80%">Celebrations & Ramadan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATE -->
+<section class="certificate">
+  <div class="cert-inner">
+    <div class="cert-badge">🎓</div>
+    <h2>Earn Your <em>Certificate</em></h2>
+    <p>Upon completing all 8 modules and the final assessment, you'll receive an official certificate in Family Nutrition — designed by a specialist in endocrinology and clinical nutrition. Share it proudly, or simply carry the knowledge that you've invested in your family's health.</p>
+    <div class="cert-credentials">
+      <div class="cred-item"><span class="cred-icon">✅</span> Clinically Designed</div>
+      <div class="cred-item"><span class="cred-icon">🇪🇬</span> Egypt-Contextual Content</div>
+      <div class="cred-item"><span class="cred-icon">🏆</span> Shareable Certificate</div>
+      <div class="cred-item"><span class="cred-icon">♾️</span> Lifetime Access</div>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLLMENT -->
+<section class="enrollment" id="enrollment">
+  <div class="section-label">Enroll Today</div>
+  <h2>Choose Your <em>Path</em></h2>
+  <div class="enroll-grid">
+    <div class="enroll-card">
+      <div class="enroll-card-header sage">
+        <div class="plan-name">Essential</div>
+        <div class="plan-desc">Full course access, all materials included</div>
+        <div class="plan-price">
+          <span class="currency">EGP</span>
+          <span class="amount">1,490</span>
+          <span class="period">one-time</span>
+        </div>
+      </div>
+      <div class="enroll-card-body">
+        <ul class="plan-features">
+          <li><span class="feat-check sage">✓</span> All 8 course modules (40+ lessons)</li>
+          <li><span class="feat-check sage">✓</span> 60+ Egyptian recipe library</li>
+          <li><span class="feat-check sage">✓</span> Digital meal planning workbook</li>
+          <li><span class="feat-check sage">✓</span> Completion certificate</li>
+          <li><span class="feat-check sage">✓</span> Lifetime access to content</li>
+          <li><span class="feat-check sage">✓</span> Private community group</li>
+        </ul>
+        <button class="enroll-btn sage">Enroll — Essential</button>
+      </div>
+    </div>
+
+    <div class="enroll-card">
+      <div class="enroll-card-header brown">
+        <div class="plan-name">Premium</div>
+        <div class="plan-desc">Everything in Essential, plus live access & coaching</div>
+        <div class="plan-price">
+          <span class="currency">EGP</span>
+          <span class="amount">2,490</span>
+          <span class="period">one-time</span>
+        </div>
+      </div>
+      <div class="enroll-card-body">
+        <ul class="plan-features">
+          <li><span class="feat-check brown">✓</span> Everything in Essential</li>
+          <li><span class="feat-check brown">✓</span> 3 live monthly Q&A sessions</li>
+          <li><span class="feat-check brown">✓</span> Personalized family nutrition review</li>
+          <li><span class="feat-check brown">✓</span> Priority community support</li>
+          <li><span class="feat-check brown">✓</span> Printable Arabic recipe cards</li>
+          <li><span class="feat-check brown">✓</span> Future module updates included</li>
+        </ul>
+        <button class="enroll-btn brown">Enroll — Premium</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section class="instructor">
+  <div class="instructor-inner">
+    <div class="instructor-card">
+      <div class="instructor-avatar">👩‍⚕️</div>
+      <div class="instructor-name">Dr. [Your Name]</div>
+      <div class="instructor-title">Endocrinology & Clinical Nutrition Specialist</div>
+      <div class="instructor-tags">
+        <span class="itag">🏥 Private Clinic</span>
+        <span class="itag">🎓 Medical Teaching</span>
+        <span class="itag">📚 Researcher</span>
+        <span class="itag">🇪🇬 Egypt-Based</span>
+      </div>
+    </div>
+    <div class="instructor-bio">
+      <h3>A Doctor Who Understands the Egyptian Kitchen</h3>
+      <p>This course was created by a practicing specialist in endocrinology and clinical nutrition — not a generic wellness influencer. Every recommendation is rooted in clinical evidence and adapted for the realities of Egyptian families: local ingredients, common health conditions, diverse budgets, and cultural food traditions.</p>
+      <p>With experience in both clinical practice and medical teaching across multiple specialties, the instructor bridges the gap between what the science says and what actually works on a Tuesday night in an Egyptian home.</p>
+      <ul class="credential-list">
+        <li>Specialist in Endocrinology & Clinical Nutrition</li>
+        <li>Active medical educator across multiple specialties</li>
+        <li>Private clinic owner with direct patient experience</li>
+        <li>Research-focused with publications in clinical nutrition</li>
+        <li>Deeply familiar with Egyptian food culture and health challenges</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">Family<em>Nourished</em></div>
+    <div class="footer-tagline">A doctor-designed nutrition course for Egyptian mothers. Practical, affordable, and built for real family life.</div>
+  </div>
+  <div class="footer-col">
+    <h5>Course</h5>
+    <ul class="footer-links">
+      <li><a href="#">Curriculum</a></li>
+      <li><a href="#">For Working Mothers</a></li>
+      <li><a href="#">For Housewives</a></li>
+      <li><a href="#">Family Size Plans</a></li>
+      <li><a href="#">Ramadan Module</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h5>Info</h5>
+    <ul class="footer-links">
+      <li><a href="#">About the Instructor</a></li>
+      <li><a href="#">Enroll Now</a></li>
+      <li><a href="#">FAQ</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">Privacy Policy</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 FamilyNourished. All rights reserved.</p>
+  <p>Designed for Egyptian families. Backed by clinical nutrition science.</p>
+</div>
+
+</body>
+</html>

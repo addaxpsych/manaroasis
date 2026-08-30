@@ -1,0 +1,169 @@
+/* ───────────────────────────────────────────────────────────
+   واحة د. منار مبارز — design system
+
+   Two visual systems, both taken from the client's posters:
+
+   A. "الواحة" (oasis) — the default. Sandstone arches, date palms,
+      deep green bands, gold rosettes. Used across the clinic site.
+   B. "بوتانيكال" (botanical) — cream, sage and gold with loose
+      botanical linework. Used for women's-wellness courses; opted
+      into with `data-theme="botanical"` on any container.
+   ─────────────────────────────────────────────────────────── */
+
+@import 'tailwindcss';
+
+/* Arabic faces, self-hosted so Workers serves them with no third-party hop. */
+@import '@fontsource/almarai/400.css';
+@import '@fontsource/almarai/700.css';
+@import '@fontsource/almarai/800.css';
+@import '@fontsource/ibm-plex-sans-arabic/300.css';
+@import '@fontsource/ibm-plex-sans-arabic/400.css';
+@import '@fontsource/ibm-plex-sans-arabic/500.css';
+@import '@fontsource/ibm-plex-sans-arabic/600.css';
+/* Latin serif — used only in the botanical system's English lockups. */
+@import '@fontsource/cormorant-garamond/300.css';
+@import '@fontsource/cormorant-garamond/400.css';
+
+@theme {
+  /* ── System A — oasis ── */
+  --color-oasis-900: #1b3d30;
+  --color-oasis-800: #1f4636;
+  --color-oasis-700: #24503c;
+  --color-oasis-600: #2f5f47;
+  --color-oasis-500: #3d6b53;
+  --color-oasis-400: #5c8770;
+
+  --color-gold-600: #a87c31;
+  --color-gold-500: #c1913f;
+  --color-gold-400: #d4ab63;
+  --color-gold-200: #ecd9b0;
+
+  --color-sand-500: #c9a877;
+  --color-sand-400: #d9bd93;
+  --color-sand-300: #e5d1ac;
+  --color-sand-200: #efe1cb;
+  --color-sand-100: #f7efe1;
+  --color-sand-50: #fdf9f2;
+
+  --color-terracotta-600: #96602f;
+  --color-terracotta-500: #b0703c;
+  --color-terracotta-300: #d9a37a;
+
+  --color-sky-700: #3b566d;
+  --color-sky-600: #4a6b87;
+  --color-sky-300: #a9c0d2;
+
+  /* ── System B — botanical ── */
+  --color-sage-700: #6b7a5a;
+  --color-sage-500: #8a9a76;
+  --color-sage-300: #b3bfa2;
+  --color-cream-100: #faf6f0;
+  --color-blush-200: #e8d5c8;
+
+  /* ── Shared ink ── */
+  --color-ink: #2b241c;
+  --color-ink-soft: #6b5b4a;
+  --color-ink-faint: #9a8a78;
+
+  /* ── Type ── */
+  --font-display: 'Almarai', 'Segoe UI', Tahoma, sans-serif;
+  --font-body: 'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+
+  /* Arch-topped card radius — echoes the doctor cards in `all drs.jpg`. */
+  --radius-arch: 7rem 7rem 1.25rem 1.25rem;
+}
+
+/* ── Semantic tokens, swapped per theme ───────────────────── */
+:root {
+  --surface: var(--color-sand-100);
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--color-sand-200);
+  --accent: var(--color-oasis-700);
+  --accent-strong: var(--color-oasis-900);
+  --accent-soft: var(--color-sand-300);
+  --ornament: var(--color-gold-500);
+  --hairline: color-mix(in oklab, var(--color-sand-500) 45%, transparent);
+}
+
+[data-theme='botanical'] {
+  --surface: var(--color-cream-100);
+  --surface-raised: #ffffff;
+  --surface-sunken: #f2ece2;
+  --accent: var(--color-sage-700);
+  --accent-strong: #55624a;
+  --accent-soft: var(--color-sage-300);
+  --ornament: var(--color-gold-400);
+  --hairline: color-mix(in oklab, var(--color-sage-500) 35%, transparent);
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Arabic sits low in the em box; a touch more leading reads calmer. */
+    line-height: 1.85;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
+
+  /* Arabic numerals stay Western — matches the posters (01010429267). */
+  .num {
+    font-variant-numeric: lining-nums tabular-nums;
+    direction: ltr;
+    unicode-bidi: embed;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ── Components ───────────────────────────────────────────── */
+@layer components {
+  /* The signature arch-topped card. */
+  .arch-card {
+    border-radius: var(--radius-arch);
+    background: var(--surface-raised);
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+  }
+
+  /* Sandstone tessellation lifted from the brand banner. */
+  .pattern-sand {
+    background-color: var(--color-sand-100);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23c9a877' stroke-opacity='0.28' stroke-width='1'%3E%3Cpath d='M36 4 44 12 44 24 36 32 28 24 28 12Z'/%3E%3Cpath d='M36 40 44 48 44 60 36 68 28 60 28 48Z'/%3E%3Cpath d='M0 22 8 30 0 38'/%3E%3Cpath d='M72 22 64 30 72 38'/%3E%3Cpath d='M28 24 12 30 28 48'/%3E%3Cpath d='M44 24 60 30 44 48'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 72px 72px;
+  }
+
+  .prose-ar {
+    max-width: 68ch;
+  }
+  .prose-ar p + p {
+    margin-block-start: 1.15em;
+  }
+}

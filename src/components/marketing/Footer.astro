@@ -1,0 +1,80 @@
+---
+import Logo from '../brand/Logo.astro';
+import Rosette from '../brand/Rosette.astro';
+import WhatsAppIcon from '../ui/WhatsAppIcon.astro';
+import { site, branches, waLink, telLink, mailLink } from '../../config/site';
+import { services } from '../../config/services';
+
+const year = new Date().getFullYear();
+---
+<footer class="mt-24 bg-oasis-900 text-sand-100">
+  <div class="mx-auto max-w-7xl px-6 py-16">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
+      <div>
+        <div class="text-sand-100 [&_span]:!text-sand-100">
+          <Logo />
+        </div>
+        <p class="mt-5 max-w-sm text-sm leading-loose text-sand-200/70">
+          {site.positioning}
+        </p>
+        <a
+          href={waLink('السلام عليكم، حابة أحجز موعد في الواحة')}
+          target="_blank" rel="noopener noreferrer"
+          class="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#1f7a4d] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#186b42]"
+        >
+          <WhatsAppIcon size={16} /> احجزي على واتساب
+        </a>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-xs font-bold tracking-[0.16em] text-gold-400">العيادات</h3>
+        <ul class="space-y-2.5 text-sm text-sand-200/70">
+          {services.slice(0, 6).map((s) => (
+            <li>
+              <a href={`/services/${s.slug}`} class="transition hover:text-gold-200">{s.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-xs font-bold tracking-[0.16em] text-gold-400">الواحة</h3>
+        <ul class="space-y-2.5 text-sm text-sand-200/70">
+          <li><a href="/about" class="transition hover:text-gold-200">عن الواحة</a></li>
+          <li><a href="/team" class="transition hover:text-gold-200">فريق الواحة</a></li>
+          <li><a href="/courses" class="transition hover:text-gold-200">الكورسات</a></li>
+          <li><a href="/online-consultations" class="transition hover:text-gold-200">استشارات أونلاين</a></li>
+          <li><a href="/locations" class="transition hover:text-gold-200">أماكن العيادات</a></li>
+          <li><a href="/contact" class="transition hover:text-gold-200">تواصلي معنا</a></li>
+          <li><a href="/privacy" class="transition hover:text-gold-200">سياسة الخصوصية</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-xs font-bold tracking-[0.16em] text-gold-400">تواصلي معنا</h3>
+        <ul class="space-y-3 text-sm text-sand-200/70">
+          <li><a href={telLink} class="num transition hover:text-gold-200">{site.phone}</a></li>
+          <li><a href={mailLink} class="break-all transition hover:text-gold-200" dir="ltr">{site.email}</a></li>
+        </ul>
+        <div class="mt-6 space-y-4">
+          {branches.map((b) => (
+            <div>
+              <p class="flex items-center gap-1.5 text-sm font-semibold text-sand-100">
+                <Rosette size={10} class="text-gold-400" />
+                {b.name}
+              </p>
+              <p class="mt-1 text-xs leading-relaxed text-sand-200/60">{b.building}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-sand-200/12">
+    <div class="mx-auto flex max-w-7xl flex-col items-center gap-2 px-6 py-5 text-center text-xs text-sand-200/45 sm:flex-row sm:justify-between sm:text-start">
+      <p>© {year} {site.name}. جميع الحقوق محفوظة.</p>
+      <p>المحتوى الطبي في هذا الموقع للتثقيف فقط ولا يغني عن الاستشارة الطبية.</p>
+    </div>
+  </div>
+</footer>

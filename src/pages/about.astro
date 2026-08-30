@@ -1,0 +1,90 @@
+---
+export const prerender = true;
+
+import Marketing from '../layouts/Marketing.astro';
+import Rosette from '../components/brand/Rosette.astro';
+import Divider from '../components/brand/Divider.astro';
+import Button from '../components/ui/Button.astro';
+import { site } from '../config/site';
+import { team } from '../config/team';
+import { clinicSchema } from '../lib/schema';
+
+const founder = team[0];
+---
+
+<Marketing
+  title="عن الواحة"
+  description={site.positioning}
+  schema={clinicSchema()}
+>
+  <section class="pattern-sand relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50/85 to-sand-100"></div>
+    <div class="relative mx-auto max-w-3xl px-6 py-16 text-center">
+      <Rosette size={26} class="mx-auto text-gold-500" />
+      <h1 class="mt-5 text-3xl leading-tight text-oasis-900 sm:text-4xl">عن الواحة</h1>
+      <p class="mt-6 text-lg leading-loose text-ink-soft">{site.positioning}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-6 py-16">
+    <div class="prose-ar mx-auto text-[1rem] leading-loose text-ink-soft">
+      <p>
+        اخترنا اسم «الواحة» عن قصد. الواحة مش وجهة نهائية — هي المكان اللي بترتاحي فيه
+        وسط طريق طويل، تشربي، تلتقطي أنفاسك، وتكملي وأنتِ أقوى.
+      </p>
+      <p>
+        الأمومة رحلة طويلة، وأغلب الوقت الأم بتكون آخر واحدة حد بيسأل عنها. هنا بنعكس
+        الترتيب ده: بنسمعك الأول، وبعدين نتكلم.
+      </p>
+
+      <Divider class="my-10" />
+
+      <h2 class="text-2xl text-oasis-900">إيه اللي بيميز الواحة</h2>
+      <p>
+        مش بس إن عندنا سبع تخصصات تحت سقف واحد — ده مهم، لكن الأهم إن الفريق بيتكلم مع
+        بعضه. لما تيجي لعيادة الرضاعة وتحتاجي متابعة مع طبيب أطفال، أو تيجي لعيادة التغذية
+        وتحتاجي تظبطي هرموناتك، الطريق بينهم قصير.
+      </p>
+      <p>
+        وبنشتغل بمبدأ واحد: مفيش سؤال ساذج، ومفيش قرار غلط. كل أم بتيجي من ظروف مختلفة،
+        والخطة اللي بنبنيها لازم تنفع حياتها هي — مش حياة نموذجية على ورق.
+      </p>
+
+      <Divider class="my-10" />
+
+      <h2 class="text-2xl text-oasis-900">الكورسات</h2>
+      <p>
+        مش كل أم تقدر توصل للعيادة، ومش كل سؤال محتاج زيارة. عشان كده بنسجّل كورسات
+        بالعربي تقدري تتفرجي عليها في وقتك، من بيتك، وتقدمك بيتحفظ عشان تكملي براحتك.
+      </p>
+    </div>
+
+    <div class="mt-12 rounded-[3rem_3rem_1rem_1rem] border border-sand-400/50 bg-white p-8">
+      <div class="flex flex-col items-center gap-6 text-center sm:flex-row sm:text-start">
+        <img
+          src={founder.photo}
+          alt={founder.name}
+          width="400"
+          height="500"
+          loading="lazy"
+          class="h-32 w-28 shrink-0 rounded-[3rem_3rem_0.75rem_0.75rem] border border-sand-400/50 object-cover"
+        />
+        <div>
+          <p class="text-xs font-semibold tracking-widest text-gold-600">المؤسِّسة</p>
+          <h2 class="mt-1.5 text-xl text-oasis-900">{founder.name}</h2>
+          <p class="mt-1 text-sm text-ink-soft">{founder.role}</p>
+          <a
+            href={`/team/${founder.slug}`}
+            class="mt-4 inline-block text-sm font-semibold text-oasis-700 hover:text-gold-600"
+          >
+            السيرة الكاملة ←
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 text-center">
+      <Button href="/team" size="lg">تعرفي على الفريق كامل</Button>
+    </div>
+  </section>
+</Marketing>

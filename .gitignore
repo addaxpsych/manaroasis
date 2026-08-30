@@ -1,0 +1,32 @@
+# build output
+dist/
+.astro/
+.wrangler/
+
+# dependencies
+node_modules/
+
+# secrets — never commit
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+
+# generated types
+worker-configuration.d.ts
+
+# logs / os
+npm-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# local agent tooling state
+.claude-flow/
+.swarm/
+.hive-mind/

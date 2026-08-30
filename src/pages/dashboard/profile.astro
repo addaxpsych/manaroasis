@@ -1,0 +1,103 @@
+---
+import Dashboard from '../../layouts/Dashboard.astro';
+import { requireUser } from '../../lib/guards';
+
+const auth = requireUser(Astro);
+if ('redirect' in auth) return auth.redirect;
+let { profile } = auth;
+const { userId } = auth;
+
+let saved = false;
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const fullName = String(form.get('fullName') ?? '').trim();
+  const phone = String(form.get('phone') ?? '').trim();
+  const city = String(form.get('city') ?? '').trim();
+
+  if (fullName.length < 2) {
+    error = 'من فضلك اكتبي اسمك بالكامل.';
+  } else if (phone && !/^(\+?20)?0?1[0125][0-9]{8}$/.test(phone)) {
+    error = 'رقم الموبايل غير صحيح.';
+  } else {
+    /* `role` is deliberately not in this update. The RLS policy would reject a
+       self-elevation anyway, but not sending it at all keeps the intent clear. */
+    const { data, error: updateError } = await Astro.locals.supabase
+      .from('profiles')
+      .update({ full_name: fullName, phone: phone || null, city: city || null })
+      .eq('id', userId)
+      .select()
+      .single();
+
+    if (updateError) {
+      error = 'مانفعش نحفظ البيانات. جربي تاني.';
+    } else {
+      saved = true;
+      if (data) profile = data;
+    }
+  }
+}
+
+const field =
+  'w-full rounded-xl border border-sand-400/60 bg-sand-50 px-4 py-3 text-sm text-ink ' +
+  'placeholder:text-ink-faint focus:border-oasis-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-oasis-700/15';
+const label = 'mb-1.5 block text-sm font-semibold text-oasis-900';
+---
+
+<Dashboard title="بياناتي" profile={profile}>
+  <header class="mb-6">
+    <h1 class="text-3xl text-oasis-900">بياناتي</h1>
+    <p class="mt-2 text-sm text-ink-soft">بياناتك دي بنستخدمها للتواصل معاكِ بخصوص كورساتك.</p>
+  </header>
+
+  <div class="max-w-lg rounded-[3rem_3rem_1rem_1rem] border border-sand-400/50 bg-white p-8">
+    <form method="POST" class="space-y-4">
+      {
+        saved && (
+          <p class="rounded-xl border border-oasis-700/40 bg-oasis-700/10 px-4 py-3 text-sm text-oasis-700">
+            تم حفظ بياناتك.
+          </p>
+        )
+      }
+      {
+        error && (
+          <p role="alert" class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+            {error}
+          </p>
+        )
+      }
+
+      <div>
+        <label class={label} for="fullName">الاسم بالكامل</label>
+        <input
+          id="fullName" name="fullName" type="text" required autocomplete="name"
+          value={profile.full_name} class={field}
+        />
+      </div>
+
+      <div>
+        <label class={label} for="phone">رقم الموبايل</label>
+        <input
+          id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel"
+          value={profile.phone ?? ''} dir="ltr" class={`${field} text-start`} placeholder="01xxxxxxxxx"
+        />
+      </div>
+
+      <div>
+        <label class={label} for="city">المدينة</label>
+        <input
+          id="city" name="city" type="text" autocomplete="address-level2"
+          value={profile.city ?? ''} class={field} placeholder="القاهرة"
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="w-full rounded-xl bg-oasis-900 px-6 py-3.5 text-sm font-bold text-sand-50 transition hover:bg-oasis-700"
+      >
+        حفظ البيانات
+      </button>
+    </form>
+  </div>
+</Dashboard>

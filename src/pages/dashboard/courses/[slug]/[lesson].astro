@@ -1,0 +1,191 @@
+---
+import Dashboard from '../../../../layouts/Dashboard.astro';
+import LessonComplete from '../../../../components/islands/LessonComplete';
+import Rosette from '../../../../components/brand/Rosette.astro';
+import { requireUser } from '../../../../lib/guards';
+import { getCourseOutline } from '../../../../lib/courses';
+
+const auth = requireUser(Astro);
+if ('redirect' in auth) return auth.redirect;
+const { profile, userId } = auth;
+
+const { slug, lesson: lessonSlug } = Astro.params;
+if (!slug || !lessonSlug) return Astro.redirect('/dashboard');
+
+const supabase = Astro.locals.supabase;
+const course = await getCourseOutline(supabase, slug);
+if (!course) return Astro.redirect('/dashboard');
+
+const flat = course.modules.flatMap((m) =>
+  m.lessons.map((l) => ({ ...l, moduleTitle: m.title_ar })),
+);
+const index = flat.findIndex((l) => l.slug === lessonSlug);
+
+/* A missing lesson here usually means RLS filtered it out — the visitor is not
+   enrolled — so send them to the outline, which explains the situation. */
+if (index === -1) return Astro.redirect(`/dashboard/courses/${course.slug}`);
+
+const lesson = flat[index];
+const previous = index > 0 ? flat[index - 1] : undefined;
+const next = index < flat.length - 1 ? flat[index + 1] : undefined;
+
+const { data: progress } = await supabase
+  .from('lesson_progress')
+  .select('completed_at')
+  .eq('user_id', userId)
+  .eq('lesson_id', lesson.id)
+  .maybeSingle();
+
+const isComplete = Boolean(progress?.completed_at);
+
+/** Builds a privacy-friendly embed URL for the configured provider. */
+function embedUrl(provider: string | null, id: string | null): string | null {
+  if (!provider || !id) return null;
+  switch (provider) {
+    case 'youtube':
+      return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
+    case 'vimeo':
+      return `https://player.vimeo.com/video/${id}`;
+    case 'bunny':
+      return `https://iframe.mediadelivery.net/embed/${id}`;
+    case 'cloudflare_stream':
+      return `https://customer-${id}.cloudflarestream.com/iframe`;
+    default:
+      return null;
+  }
+}
+
+const video = embedUrl(lesson.video_provider, lesson.video_id);
+const attachments = lesson.attachments ?? [];
+---
+
+<Dashboard title={lesson.title_ar} profile={profile}>
+  <nav aria-label="مسار التنقل" class="mb-5 text-xs text-ink-faint">
+    <a href="/dashboard" class="hover:text-oasis-700">كورساتي</a>
+    <span class="mx-2">/</span>
+    <a href={`/dashboard/courses/${course.slug}`} class="hover:text-oasis-700">{course.title_ar}</a>
+  </nav>
+
+  <div data-theme={course.theme} class="grid gap-8 lg:grid-cols-[1fr_320px]">
+    <article>
+      <p class="text-xs font-semibold tracking-widest text-gold-600">{lesson.moduleTitle}</p>
+      <h1 class="mt-2 text-2xl leading-snug text-oasis-900 sm:text-3xl">{lesson.title_ar}</h1>
+
+      {
+        video ? (
+          <div class="mt-7 overflow-hidden rounded-2xl border border-sand-400/50 bg-black">
+            <iframe
+              src={video}
+              title={lesson.title_ar}
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowfullscreen
+              class="aspect-video w-full"
+            />
+          </div>
+        ) : (
+          <div class="mt-7 flex aspect-video items-center justify-center rounded-2xl border border-dashed border-sand-400 bg-sand-50 text-center">
+            <div>
+              <Rosette size={22} class="mx-auto text-gold-500" />
+              <p class="mt-3 text-sm text-ink-soft">فيديو الدرس هيتم رفعه قريباً.</p>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        lesson.content_ar && (
+          <div class="prose-ar mt-8 whitespace-pre-wrap text-[0.98rem] leading-loose text-ink-soft">
+            {lesson.content_ar}
+          </div>
+        )
+      }
+
+      <div class="mt-10 border-t border-sand-400/50 pt-7">
+        <LessonComplete
+          client:load
+          lessonId={lesson.id}
+          initiallyComplete={isComplete}
+          nextHref={next ? `/dashboard/courses/${course.slug}/${next.slug}` : undefined}
+        />
+      </div>
+
+      <nav class="mt-8 flex items-center justify-between gap-4 border-t border-sand-400/50 pt-6 text-sm">
+        {
+          previous ? (
+            <a
+              href={`/dashboard/courses/${course.slug}/${previous.slug}`}
+              class="font-semibold text-oasis-700 hover:text-gold-600"
+            >
+              → {previous.title_ar}
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next ? (
+            <a
+              href={`/dashboard/courses/${course.slug}/${next.slug}`}
+              class="text-end font-semibold text-oasis-700 hover:text-gold-600"
+            >
+              {next.title_ar} ←
+            </a>
+          ) : (
+            <span />
+          )
+        }
+      </nav>
+    </article>
+
+    <aside class="lg:sticky lg:top-24 lg:self-start">
+      {
+        attachments.length > 0 && (
+          <div class="mb-6 rounded-2xl border border-sand-400/50 bg-white p-6">
+            <h2 class="text-sm font-bold text-oasis-900">مرفقات الدرس</h2>
+            <ul class="mt-4 space-y-2.5">
+              {attachments.map((file) => (
+                <li>
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-2.5 text-sm text-oasis-700 hover:text-gold-600"
+                  >
+                    <Rosette size={11} class="shrink-0 text-gold-500" />
+                    {file.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+
+      <div class="rounded-2xl border border-sand-400/50 bg-white p-6">
+        <h2 class="text-sm font-bold text-oasis-900">دروس الكورس</h2>
+        <ol class="mt-4 space-y-1">
+          {
+            flat.map((item, i) => (
+              <li>
+                <a
+                  href={`/dashboard/courses/${course.slug}/${item.slug}`}
+                  aria-current={item.slug === lesson.slug ? 'page' : undefined}
+                  class:list={[
+                    'flex items-start gap-2.5 rounded-lg px-3 py-2 text-xs leading-relaxed transition',
+                    item.slug === lesson.slug
+                      ? 'bg-oasis-900 text-sand-50'
+                      : 'text-ink-soft hover:bg-sand-100',
+                  ]}
+                >
+                  <span class="num shrink-0 opacity-60">{i + 1}.</span>
+                  <span>{item.title_ar}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </aside>
+  </div>
+</Dashboard>

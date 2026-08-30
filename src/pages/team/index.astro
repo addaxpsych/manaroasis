@@ -1,0 +1,67 @@
+---
+export const prerender = true;
+
+import Marketing from '../../layouts/Marketing.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Rosette from '../../components/brand/Rosette.astro';
+import { team } from '../../config/team';
+import { breadcrumbSchema } from '../../lib/schema';
+---
+
+<Marketing
+  title="فريق الواحة"
+  description="سبعة متخصصين في صحة المرأة والطفل: السكر والغدد، التغذية العلاجية، الرضاعة الطبيعية، طب وجراحة الأطفال، الجراحة العامة، الجلدية، وكوتشينج نوم الأطفال."
+  schema={breadcrumbSchema([
+    { name: 'الرئيسية', path: '/' },
+    { name: 'فريق الواحة', path: '/team' },
+  ])}
+>
+  <section class="pattern-sand relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-sand-50/85 to-sand-100"></div>
+    <div class="relative mx-auto max-w-7xl px-6 py-16">
+      <SectionHeading
+        eyebrow="فريق الواحة"
+        title="الناس اللي هتقابليهم"
+        lead="كل واحد في الفريق متخصص في جزء من رحلة الأم والطفل — وبيشتغلوا مع بعض، مش كل واحد لوحده."
+        align="center"
+      />
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 pb-20">
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        team.map((d) => (
+          <article class="group relative flex flex-col overflow-hidden rounded-[4rem_4rem_1rem_1rem] border border-sand-400/50 bg-white transition duration-300 hover:-translate-y-1 hover:border-gold-500/50 hover:shadow-lg hover:shadow-oasis-900/5">
+            <div class="overflow-hidden bg-sand-200">
+              <img
+                src={d.photo}
+                alt={d.name}
+                width="800"
+                height="1000"
+                loading="lazy"
+                class="aspect-[4/5] w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div class="flex flex-1 flex-col p-6">
+              <h2 class="text-lg leading-snug text-oasis-900">
+                <a href={`/team/${d.slug}`} class="after:absolute after:inset-0">
+                  {d.name}
+                </a>
+              </h2>
+              <p class="mt-1.5 text-sm text-gold-600">{d.role}</p>
+              <ul class="mt-4 flex-1 space-y-1.5">
+                {d.credentials.slice(0, 3).map((c) => (
+                  <li class="flex items-start gap-2 text-xs leading-relaxed text-ink-soft">
+                    <Rosette size={10} class="mt-1.5 shrink-0 text-gold-500" />
+                    <span>{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</Marketing>

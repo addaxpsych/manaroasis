@@ -1,0 +1,25 @@
+---
+import Base from './Base.astro';
+import Header from '../components/marketing/Header.astro';
+import Footer from '../components/marketing/Footer.astro';
+import WhatsAppFab from '../components/marketing/WhatsAppFab.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  theme?: 'oasis' | 'botanical';
+  image?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+  /** Prefilled WhatsApp text for this page's floating booking button. */
+  waMessage?: string;
+}
+const { title, description, theme, image, schema, waMessage } = Astro.props;
+---
+<Base title={title} description={description} theme={theme} image={image} schema={schema}>
+  <Header />
+  <main id="main">
+    <slot />
+  </main>
+  <Footer />
+  <WhatsAppFab message={waMessage} />
+</Base>

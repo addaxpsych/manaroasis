@@ -1,0 +1,179 @@
+---
+import Dashboard from '../../../../layouts/Dashboard.astro';
+import Rosette from '../../../../components/brand/Rosette.astro';
+import Button from '../../../../components/ui/Button.astro';
+import { requireUser } from '../../../../lib/guards';
+import { getCourseOutline, progressPercent } from '../../../../lib/courses';
+
+const auth = requireUser(Astro);
+if ('redirect' in auth) return auth.redirect;
+const { profile, userId } = auth;
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/dashboard');
+
+const supabase = Astro.locals.supabase;
+const course = await getCourseOutline(supabase, slug);
+if (!course) return Astro.redirect('/dashboard');
+
+/* Enrollment is enforced by RLS on `lessons`, but checking here gives the
+   user a useful page instead of a mysteriously empty one. */
+const { data: enrollment } = await supabase
+  .from('enrollments')
+  .select('id, status')
+  .eq('user_id', userId)
+  .eq('course_id', course.id)
+  .maybeSingle();
+
+const isActive = enrollment?.status === 'active';
+
+const allLessons = course.modules.flatMap((m) => m.lessons);
+const { data: progressRows } = await supabase
+  .from('lesson_progress')
+  .select('lesson_id, completed_at')
+  .eq('user_id', userId)
+  .not('completed_at', 'is', null);
+
+const completedIds = new Set((progressRows ?? []).map((p) => p.lesson_id));
+const percent = progressPercent(allLessons.length, completedIds.size);
+const nextLesson = allLessons.find((l) => !completedIds.has(l.id)) ?? allLessons[0];
+---
+
+<Dashboard title={course.title_ar} profile={profile}>
+  <nav aria-label="مسار التنقل" class="mb-5 text-xs text-ink-faint">
+    <a href="/dashboard" class="hover:text-oasis-700">كورساتي</a>
+    <span class="mx-2">/</span>
+    <span>{course.title_ar}</span>
+  </nav>
+
+  <div data-theme={course.theme}>
+    <header class="rounded-[3rem_3rem_1rem_1rem] border border-sand-400/50 bg-white p-8">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+        {
+          course.cover_image && (
+            <img
+              src={course.cover_image}
+              alt={course.title_ar}
+              width="200"
+              height="200"
+              class="h-28 w-28 shrink-0 rounded-2xl border border-sand-400/50 object-cover"
+            />
+          )
+        }
+        <div class="min-w-0 flex-1">
+          <h1 class="text-2xl leading-snug text-oasis-900">{course.title_ar}</h1>
+          <p class="mt-2 text-sm text-ink-soft">
+            {completedIds.size} من {allLessons.length} درس مكتمل
+          </p>
+
+          <div
+            class="mt-4 h-2.5 overflow-hidden rounded-full bg-sand-200"
+            role="progressbar"
+            aria-valuenow={percent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="تقدمك في الكورس"
+          >
+            <div class="h-full rounded-full bg-oasis-700 transition-all" style={`width:${percent}%`}></div>
+          </div>
+        </div>
+
+        {
+          isActive && nextLesson && (
+            <Button href={`/dashboard/courses/${course.slug}/${nextLesson.slug}`} class="shrink-0">
+              {completedIds.size === 0 ? 'ابدئي' : 'كملي'}
+            </Button>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      !isActive && (
+        <div class="mt-6 rounded-2xl border border-gold-500/45 bg-gold-200/25 p-6">
+          <h2 class="text-lg font-bold text-oasis-900">الكورس لسه مش مفعّل</h2>
+          <p class="mt-2 text-sm leading-loose text-ink-soft">
+            هنفعّل الكورس فور تأكيد الدفع وهيوصلك إيميل. الدروس المجانية متاحة لك دلوقتي.
+          </p>
+        </div>
+      )
+    }
+
+    <div class="mt-8 space-y-4">
+      {
+        course.modules.map((module, index) => (
+          <section class="overflow-hidden rounded-2xl border border-sand-400/50 bg-white">
+            <header class="flex items-center gap-3.5 border-b border-sand-400/50 bg-sand-50 px-6 py-4">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-oasis-900 text-xs font-bold text-sand-50">
+                {index + 1}
+              </span>
+              <div>
+                <h2 class="text-base font-bold text-oasis-900">{module.title_ar}</h2>
+                {module.summary_ar && (
+                  <p class="mt-0.5 text-xs text-ink-soft">{module.summary_ar}</p>
+                )}
+              </div>
+            </header>
+
+            <ul>
+              {module.lessons.map((lesson) => {
+                const done = completedIds.has(lesson.id);
+                const locked = !isActive && !lesson.is_preview;
+                return (
+                  <li class="border-b border-sand-400/40 last:border-0">
+                    {locked ? (
+                      <div class="flex items-center gap-3 px-6 py-4 opacity-55">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-ink-faint">
+                          <rect x="4" y="11" width="16" height="10" rx="2" />
+                          <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                        </svg>
+                        <span class="text-sm text-ink-soft">{lesson.title_ar}</span>
+                      </div>
+                    ) : (
+                      <a
+                        href={`/dashboard/courses/${course.slug}/${lesson.slug}`}
+                        class="flex items-center gap-3 px-6 py-4 transition hover:bg-sand-50"
+                      >
+                        <span
+                          class:list={[
+                            'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[10px]',
+                            done
+                              ? 'border-oasis-700 bg-oasis-700 text-white'
+                              : 'border-sand-400 text-transparent',
+                          ]}
+                          aria-hidden="true"
+                        >
+                          ✓
+                        </span>
+                        <span class="flex-1 text-sm text-ink">{lesson.title_ar}</span>
+                        {lesson.is_preview && !isActive && (
+                          <span class="rounded-full bg-oasis-700/12 px-2.5 py-0.5 text-xs font-semibold text-oasis-700">
+                            مجاني
+                          </span>
+                        )}
+                        {lesson.duration_minutes && (
+                          <span class="num shrink-0 text-xs text-ink-faint">
+                            {lesson.duration_minutes} د
+                          </span>
+                        )}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
+      }
+
+      {
+        course.modules.length === 0 && (
+          <div class="rounded-2xl border border-sand-400/50 bg-white p-10 text-center">
+            <Rosette size={22} class="mx-auto text-gold-500" />
+            <p class="mt-4 text-sm text-ink-soft">محتوى الكورس قيد الإعداد.</p>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</Dashboard>
