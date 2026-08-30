@@ -29,6 +29,16 @@ if (Astro.request.method === 'POST') {
     else saved = publish ? 'تم نشر الكورس.' : 'تم إخفاء الكورس.';
   }
 
+  if (action === 'coming-soon') {
+    const value = String(form.get('comingSoon')) === 'true';
+    const { error: updateError } = await supabase
+      .from('courses')
+      .update({ coming_soon: value })
+      .eq('id', courseId);
+    if (updateError) error = 'مانفعش نحدث حالة الكورس.';
+    else saved = value ? 'الكورس دلوقتي معروض كـ «قريباً».' : 'تم فتح الكورس للتسجيل.';
+  }
+
   if (action === 'price') {
     const price = Number(form.get('price') ?? 0);
     const discountRaw = String(form.get('discount') ?? '').trim();
@@ -87,8 +97,11 @@ const input =
     {
       courses.map((course) => {
         const lessonCount = counts.get(course.id) ?? 0;
-        const blockedReason =
-          lessonCount === 0
+        /* A «قريباً» course is announced, not sold, so the price and lesson
+           requirements do not apply to it. */
+        const blockedReason = course.coming_soon
+          ? null
+          : lessonCount === 0
             ? 'الكورس مالوش دروس لسه'
             : course.price_egp === 0
               ? 'السعر لسه صفر'
@@ -122,6 +135,11 @@ const input =
                   <span class="rounded-full border border-sand-400/60 px-2.5 py-0.5 text-xs text-ink-soft">
                     {course.theme === 'botanical' ? 'بوتانيكال' : 'الواحة'}
                   </span>
+                  {course.coming_soon && (
+                    <span class="rounded-full bg-gold-500 px-2.5 py-0.5 text-xs font-bold text-white">
+                      قريباً
+                    </span>
+                  )}
                 </div>
                 <p class="num mt-1.5 text-xs text-ink-faint">
                   {lessonCount} درس · /courses/{course.slug}
@@ -185,6 +203,18 @@ const input =
                   class="rounded-xl border border-oasis-700 px-5 py-2.5 text-sm font-bold text-oasis-700 transition hover:bg-oasis-700/8"
                 >
                   حفظ السعر
+                </button>
+              </form>
+
+              <form method="POST" class="mt-4 border-t border-sand-400/40 pt-4">
+                <input type="hidden" name="courseId" value={course.id} />
+                <input type="hidden" name="action" value="coming-soon" />
+                <input type="hidden" name="comingSoon" value={String(!course.coming_soon)} />
+                <button
+                  type="submit"
+                  class="text-sm font-semibold text-oasis-700 underline decoration-gold-400 underline-offset-4 hover:text-gold-600"
+                >
+                  {course.coming_soon ? 'افتحي الكورس للتسجيل' : 'اعرضيه كـ «قريباً»'}
                 </button>
               </form>
             </div>

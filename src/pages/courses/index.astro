@@ -82,9 +82,14 @@ const courses = await listPublishedCourses(Astro.locals.supabase);
                         {course.delivery_label}
                       </span>
                     )}
-                    {course.access === 'free' && (
+                    {course.access === 'free' && !course.coming_soon && (
                       <span class="inline-flex w-fit items-center rounded-full bg-[var(--accent-strong)] px-3 py-1 text-xs font-bold text-white">
                         مجاني للجميع
+                      </span>
+                    )}
+                    {course.coming_soon && (
+                      <span class="inline-flex w-fit items-center rounded-full bg-[var(--ornament)] px-3 py-1 text-xs font-bold text-white">
+                        قريباً
                       </span>
                     )}
                   </div>
@@ -111,10 +116,22 @@ const courses = await listPublishedCourses(Astro.locals.supabase);
 
                   <div class="mt-auto flex items-center justify-between gap-4 pt-7">
                     <span class="text-lg font-extrabold text-[var(--accent-strong)]">
-                      {course.access === 'free' ? 'مجاناً' : price.display}
+                      {
+                        course.coming_soon
+                          ? 'قريباً'
+                          : course.access === 'free'
+                            ? 'مجاناً'
+                            : price.display
+                      }
                     </span>
                     <span class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">
-                      {course.access === 'free' ? 'شاهدي الحلقات' : 'التفاصيل'}
+                      {
+                        course.coming_soon
+                          ? 'اعرفي التفاصيل'
+                          : course.access === 'free'
+                            ? 'شاهدي الحلقات'
+                            : 'التفاصيل'
+                      }
                       <span class="transition group-hover:-translate-x-1">←</span>
                     </span>
                   </div>

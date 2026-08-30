@@ -40,6 +40,7 @@ export type Course = {
   discount_price_egp: number | null;
   theme: CourseTheme;
   access: CourseAccess;
+  coming_soon: boolean;
   instructor_slug: string | null;
   is_published: boolean;
   sort_order: number;

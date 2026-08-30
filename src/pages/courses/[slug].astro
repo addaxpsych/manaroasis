@@ -26,6 +26,11 @@ const waMessage = `السلام عليكم، حابة أعرف تفاصيل ${co
 const isFree = course.access === 'free';
 const firstLesson = course.modules.flatMap((m) => m.lessons)[0];
 
+/* Announced but not yet open: the curriculum is shown to build anticipation,
+   but nothing is watchable or purchasable. */
+const comingSoon = course.coming_soon;
+const notifyMessage = `السلام عليكم، حابة أعرف أول ما يفتح التسجيل في ${course.title_ar}`;
+
 /* Is this visitor already enrolled? Drives the CTA: an enrolled user should
    land in the player, not be asked to request enrollment again. */
 const user = Astro.locals.user;
@@ -124,7 +129,11 @@ const schema = [
 
         <div class="mt-9 flex flex-wrap items-center gap-3">
           {
-            isFree && firstLesson ? (
+            comingSoon ? (
+              <Button href={waLink(notifyMessage)} variant="whatsapp" size="lg" external>
+                <WhatsAppIcon size={18} /> بلغيني أول ما يفتح التسجيل
+              </Button>
+            ) : isFree && firstLesson ? (
               <Button href={`/courses/${course.slug}/${firstLesson.slug}`} size="lg">
                 ابدئي المشاهدة مجاناً
               </Button>
@@ -142,11 +151,15 @@ const schema = [
         </div>
 
         {
-          isFree && (
+          comingSoon ? (
+            <p class="mt-4 text-sm text-ink-faint">
+              الكورس لسه مافتحش للتسجيل. سيبي لنا رسالة وهنبلغك أول ما يفتح.
+            </p>
+          ) : isFree ? (
             <p class="mt-4 text-sm text-ink-faint">
               من غير تسجيل ومن غير اشتراك — اضغطي وشوفي على طول.
             </p>
-          )
+          ) : null
         }
       </div>
 
@@ -235,8 +248,9 @@ const schema = [
                   <ul class="border-t border-[var(--hairline)]">
                     {module.lessons.map((lesson) =>
                       /* Anything RLS let through is watchable right now, so it
-                         becomes a link rather than an inert row. */
-                      lesson.is_preview ? (
+                         becomes a link rather than an inert row — unless the
+                         course is only announced, where nothing opens yet. */
+                      lesson.is_preview && !comingSoon ? (
                         <li class="border-b border-[var(--hairline)]/60 last:border-0">
                           <a
                             href={`/courses/${course.slug}/${lesson.slug}`}
@@ -273,12 +287,12 @@ const schema = [
         <div class="rounded-[3rem_3rem_1rem_1rem] border border-[var(--hairline)] bg-[var(--surface-raised)] p-8 shadow-sm">
           <div class="text-center">
             <p class="text-xs font-semibold tracking-widest text-ink-faint">
-              {isFree ? 'المشاهدة' : 'قيمة الاشتراك'}
+              {comingSoon ? 'التسجيل' : isFree ? 'المشاهدة' : 'قيمة الاشتراك'}
             </p>
             <p class="mt-2 text-3xl font-extrabold text-[var(--accent-strong)]">
-              {isFree ? 'مجاناً' : price.display}
+              {comingSoon ? 'قريباً' : isFree ? 'مجاناً' : price.display}
             </p>
-            {!isFree && price.was && (
+            {!comingSoon && !isFree && price.was && (
               <p class="mt-1 text-sm text-ink-faint line-through">{price.was}</p>
             )}
           </div>
@@ -286,7 +300,17 @@ const schema = [
           <Divider class="my-6" />
 
           {
-            isFree ? (
+            comingSoon ? (
+              <div class="text-center">
+                <p class="text-sm leading-loose text-ink-soft">
+                  بنجهز الكورس دلوقتي. سيبي لنا رسالة على واتساب وهنبلغك أول ما
+                  تُفتح أبواب التسجيل.
+                </p>
+                <Button href={waLink(notifyMessage)} variant="whatsapp" class="mt-5 w-full" external>
+                  <WhatsAppIcon size={16} /> بلغيني أول ما يفتح
+                </Button>
+              </div>
+            ) : isFree ? (
               <div class="text-center">
                 <p class="text-sm leading-loose text-ink-soft">
                   كل الحلقات مفتوحة للجميع — من غير حساب ومن غير اشتراك.
