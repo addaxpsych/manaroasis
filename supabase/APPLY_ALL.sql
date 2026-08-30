@@ -376,9 +376,11 @@ create policy "admin manages messages" on public.contact_messages
 -- ─────────────────────────────────────────────────────────────
 -- 0005 — seed the real courses
 --
--- The two paid courses from designs/ are left UNPUBLISHED with price 0: the
--- client has not given prices yet, and publishing a course at 0 EGP would be
--- worse than not showing it. Set price and flip is_published in /admin/courses.
+-- الاستعداد للرضاعة قبل الولادة is priced at 600 EGP and announced as قريباً
+-- (see 0006) — visible, with its curriculum, but not yet open for enrollment.
+--
+-- الجمال يبدأ من الداخل is still UNPUBLISHED at price 0: no price and no
+-- curriculum yet. Set both in /admin/courses before publishing it.
 --
 -- بودكاست الواحة is different: it is free and public, so it ships published.
 --
@@ -399,7 +401,7 @@ insert into public.courses (
   '/images/courses/breastfeeding-prep.jpg',
   '["استعدي بثقة","زيادة إدرار الحليب","وضعيات الرضاعة الصحيحة","تجنبي المشاكل الشائعة","رحلة رضاعة ناجحة بإذن الله"]'::jsonb,
   'أونلاين | مسجل',
-  0,
+  600,
   'oasis',
   'manar-mobarez',
   false,
