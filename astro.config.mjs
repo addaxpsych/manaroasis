@@ -19,7 +19,13 @@ const site = PUBLIC_SITE_URL || 'http://localhost:4321';
  * engines the clinic lives on localhost, and the damage is invisible until it
  * has already been indexed — so say so loudly rather than failing quietly.
  */
-const isLocal = site.includes('localhost') || site.includes('127.0.0.1');
+const isLocal =
+  site.includes('localhost') ||
+  site.includes('127.0.0.1') ||
+  // A placeholder that still looks like a real URL is the dangerous
+  // case: it deploys silently and poisons every canonical tag.
+  site.includes('REPLACE-ME') ||
+  site.includes('example.com');
 if (isLocal && process.argv.includes('build')) {
   const bar = '─'.repeat(68);
   console.warn(
