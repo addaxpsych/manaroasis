@@ -148,10 +148,48 @@ npx supabase gen types typescript --project-id <ref> > src/lib/supabase/types.ts
 
 ## Deployment
 
-Push to `github.com/addaxpsych/manaroasis`, then connect the repo in the
-Cloudflare dashboard (Workers → Builds). Set the `vars` and the two secrets
-there. `npm run deploy` also works for a direct push from a machine with
-`wrangler` authenticated.
+The site is served from a Cloudflare subdomain (no custom domain), so the
+deploy order matters: **you cannot know the final URL until after the first
+deploy**, and that URL has to be baked in at build time.
+
+1. **First deploy.** Push to `github.com/addaxpsych/manaroasis` and connect the
+   repo in the Cloudflare dashboard (Workers → Builds), or run `npm run deploy`
+   from a machine with `wrangler` authenticated. Cloudflare assigns the
+   subdomain from your account name.
+2. **Note the assigned URL**, e.g. `https://manaroasis.<account>.workers.dev`.
+3. **Set `PUBLIC_SITE_URL` to it in three places:**
+   - Cloudflare → Settings → **Build** → Variables (this is the one that matters
+     — canonical tags, JSON-LD, OG images and the sitemap are baked in during
+     the build, so a runtime-only var will not reach them)
+   - Cloudflare → Settings → Variables (runtime, for the email links)
+   - `wrangler.jsonc` → `vars`, so local `wrangler dev` matches
+4. **Redeploy.** The build prints a loud warning whenever `PUBLIC_SITE_URL`
+   still points at localhost, so a wrong-origin deploy is hard to miss.
+5. **Set the secrets** once: `wrangler secret put SUPABASE_SERVICE_ROLE_KEY` and
+   `wrangler secret put RESEND_API_KEY`.
+6. **Add the deployed origin to Supabase** → Authentication → URL Configuration,
+   as both the Site URL and in the redirect allow-list (`/auth/callback` and
+   `/auth/reset-password`). Auth links will not work until you do.
+
+Moving to a custom domain later is a one-value change: update
+`PUBLIC_SITE_URL`, redeploy, and update the Supabase URL configuration.
+
+### Email needs a domain, even though the site does not
+
+Resend will only send to arbitrary recipients from a **DNS-verified domain**,
+and `pages.dev` / `workers.dev` subdomains cannot be verified. Until a real
+domain is added and verified in Resend, `onboarding@resend.dev` delivers **only
+to the address that owns the Resend account** — so enrollment confirmations,
+admin alerts and activation emails will reach nobody else.
+
+The plan is to register a domain for sending. Once it is verified:
+
+1. Set `EMAIL_FROM` to `واحة د. منار مبارز <noreply@yourdomain>`.
+2. Point Supabase Custom SMTP at Resend using the same domain — see
+   [`supabase/auth-templates/README.md`](supabase/auth-templates/README.md).
+
+The site itself can keep running on the Cloudflare subdomain; the domain is
+only needed for email until you decide to move the site too.
 
 ---
 
