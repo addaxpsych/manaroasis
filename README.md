@@ -4,7 +4,7 @@ Arabic-first clinic website and course platform for Dr. Manar Mobarez's
 women's-and-children's health practice (Maadi and Al Rehab, Cairo).
 
 > واحة د. منار مبارز ليست مجرد عيادة رضاعة طبيعية وتغذية للأم والطفل،
-> بل مساحة آمنة للأمهات.
+> بل مساحة آمنة للسيدات.
 
 **Stack** — Astro 7 (`output: 'server'`) · React islands · Tailwind v4 ·
 Supabase (Postgres + Auth) · Resend · Cloudflare Workers

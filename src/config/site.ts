@@ -25,7 +25,7 @@ export const site = {
 
   /** The client's positioning line — the promise the whole site carries. */
   positioning:
-    'واحة د. منار مبارز ليست مجرد عيادة رضاعة طبيعية وتغذية للأم والطفل، بل مساحة آمنة للأمهات.',
+    'واحة د. منار مبارز ليست مجرد عيادة رضاعة طبيعية وتغذية للأم والطفل، بل مساحة آمنة للسيدات.',
 
   phone: '01010429267',
   whatsapp: '+201010429267',

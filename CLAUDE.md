@@ -200,7 +200,7 @@ Phone numbers and prices use Western digits (`.num`, matching the posters).
 
 Arabic copy is Egyptian-colloquial and warm; the positioning line the whole site
 carries is *«واحة د. منار مبارز ليست مجرد عيادة رضاعة طبيعية وتغذية للأم والطفل،
-بل مساحة آمنة للأمهات»*.
+بل مساحة آمنة للسيدات»*.
 
 **Do not invent or paraphrase medical credentials, clinic addresses, or the
 online-consultation disclaimer.** All of it is transcribed from the posters in
